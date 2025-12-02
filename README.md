@@ -1,58 +1,160 @@
-# Electric Motor Selector（在线电机选型系统）
+# MotorVizSelect（在线电机选型系统）
 
 <div align="center">
   <a href="#">
-    <img src="frontend/src/assets/logo/logo透明底蓝色1.png" alt="Logo" width="200" height="200">
+    <img src="frontend/src/assets/logo/logo透明底蓝色1.png" alt="Logo" width="180" height="180">
   </a>
-  <p align="center">
-    <strong>专业、高效、智能的在线电机选型解决方案</strong>
-    <br />
-    <br />
-    <a href="#">查看演示</a>
-    ·
-    <a href="#">报告问题</a>
-    ·
-    <a href="#">贡献代码</a>
+  <h2 align="center" style="margin: 0; font-weight: 600; color: #1a56db;">
+    专业、高效、智能的在线电机选型解决方案
+  </h2>
+  <p align="center" style="margin: 8px 0 20px; color: #64748b;">
+    为电机制造商、分销商和终端用户提供一站式选型服务
   </p>
+  <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+    <a href="#" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: linear-gradient(135deg, #1a56db, #3b82f6); color: white; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease;">
+      🚀 查看演示
+    </a>
+    <a href="#" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: #f1f5f9; color: #334155; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease;">
+      🐛 报告问题
+    </a>
+    <a href="#" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: #f1f5f9; color: #334155; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease;">
+      💡 贡献代码
+    </a>
+  </div>
 </div>
 
 ## 📋 项目概述
 
-Electric Motor Selector 是一个功能完整的在线电机选型系统，旨在帮助用户快速、准确地选择合适的电机型号。系统提供了直观的用户界面、强大的筛选功能、3D电机查看器以及完整的后台管理系统，适用于电机制造商、分销商和终端用户。
+MotorVizSelect 是一个功能完整的在线电机选型系统，旨在帮助用户快速、准确地选择合适的电机型号。系统提供了直观的用户界面、强大的筛选功能、3D电机查看器以及完整的后台管理系统，适用于电机制造商、分销商和终端用户。
 
 ### ✨ 核心优势
 
-- **智能筛选**：支持多维度参数筛选，快速定位目标电机
-- **3D可视化**：提供电机3D模型查看，直观了解产品结构
-- **多语言支持**：支持中英文切换，满足国际化需求
-- **响应式设计**：适配各种设备尺寸，提供良好的移动端体验
-- **完整的后台管理**：支持电机信息的CRUD操作，方便数据维护
-- **安全认证**：基于JWT的身份验证机制，保障系统安全
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 20px 0;">
+  <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 20px; border-radius: 12px; border: 1px solid #bae6fd;">
+    <div style="font-size: 24px; margin-bottom: 12px;">🎯</div>
+    <h3 style="margin: 0 0 8px; font-size: 16px; font-weight: 600; color: #0c4a6e;">智能筛选</h3>
+    <p style="margin: 0; color: #475569; font-size: 14px;">支持多维度参数筛选，快速定位目标电机</p>
+  </div>
+  <div style="background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%); padding: 20px; border-radius: 12px; border: 1px solid #fbcfe8;">
+    <div style="font-size: 24px; margin-bottom: 12px;">🔮</div>
+    <h3 style="margin: 0 0 8px; font-size: 16px; font-weight: 600; color: #7c2d12;">3D可视化</h3>
+    <p style="margin: 0; color: #475569; font-size: 14px;">提供电机3D模型查看，直观了解产品结构</p>
+  </div>
+  <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 20px; border-radius: 12px; border: 1px solid #bbf7d0;">
+    <div style="font-size: 24px; margin-bottom: 12px;">🌐</div>
+    <h3 style="margin: 0 0 8px; font-size: 16px; font-weight: 600; color: #166534;">多语言支持</h3>
+    <p style="margin: 0; color: #475569; font-size: 14px;">支持中英文切换，满足国际化需求</p>
+  </div>
+  <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 20px; border-radius: 12px; border: 1px solid #fcd34d;">
+    <div style="font-size: 24px; margin-bottom: 12px;">📱</div>
+    <h3 style="margin: 0 0 8px; font-size: 16px; font-weight: 600; color: #92400e;">响应式设计</h3>
+    <p style="margin: 0; color: #475569; font-size: 14px;">适配各种设备尺寸，提供良好的移动端体验</p>
+  </div>
+  <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); padding: 20px; border-radius: 12px; border: 1px solid #e9d5ff;">
+    <div style="font-size: 24px; margin-bottom: 12px;">🛡️</div>
+    <h3 style="margin: 0 0 8px; font-size: 16px; font-weight: 600; color: #581c87;">安全认证</h3>
+    <p style="margin: 0; color: #475569; font-size: 14px;">基于JWT的身份验证机制，保障系统安全</p>
+  </div>
+  <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); padding: 20px; border-radius: 12px; border: 1px solid #fecaca;">
+    <div style="font-size: 24px; margin-bottom: 12px;">📊</div>
+    <h3 style="margin: 0 0 8px; font-size: 16px; font-weight: 600; color: #991b1b;">完整后台管理</h3>
+    <p style="margin: 0; color: #475569; font-size: 14px;">支持电机信息的CRUD操作，方便数据维护</p>
+  </div>
+</div>
 
 ## 🛠️ 技术栈
 
 ### 前端技术
 
-| 技术 | 版本 | 用途 |
-|------|------|------|
-| React | ^18.0.0 | 前端框架 |
-| React Router | ^6.0.0 | 路由管理 |
-| Axios | ^1.0.0 | API请求 |
-| Ant Design | ^5.0.0 | UI组件库 |
-| Tailwind CSS | ^3.0.0 | 样式框架 |
-| Vite | ^4.0.0 | 构建工具 |
-| Three.js | ^0.160.0 | 3D模型渲染 |
-| i18next | ^23.0.0 | 国际化支持 |
+<div style="overflow-x: auto; margin: 20px 0;">
+  <table style="width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);">
+    <thead style="background: linear-gradient(135deg, #1a56db, #3b82f6); color: white;">
+      <tr>
+        <th style="padding: 12px; text-align: left; font-weight: 600;">技术</th>
+        <th style="padding: 12px; text-align: left; font-weight: 600;">版本</th>
+        <th style="padding: 12px; text-align: left; font-weight: 600;">用途</th>
+      </tr>
+    </thead>
+    <tbody style="background: white;">
+      <tr style="border-bottom: 1px solid #e2e8f0; transition: background-color 0.2s;">
+        <td style="padding: 12px; font-weight: 500;">React</td>
+        <td style="padding: 12px; color: #64748b;">^18.0.0</td>
+        <td style="padding: 12px; color: #64748b;">前端框架</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0; transition: background-color 0.2s;">
+        <td style="padding: 12px; font-weight: 500;">React Router</td>
+        <td style="padding: 12px; color: #64748b;">^6.0.0</td>
+        <td style="padding: 12px; color: #64748b;">路由管理</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0; transition: background-color 0.2s;">
+        <td style="padding: 12px; font-weight: 500;">Axios</td>
+        <td style="padding: 12px; color: #64748b;">^1.0.0</td>
+        <td style="padding: 12px; color: #64748b;">API请求</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0; transition: background-color 0.2s;">
+        <td style="padding: 12px; font-weight: 500;">Ant Design</td>
+        <td style="padding: 12px; color: #64748b;">^5.0.0</td>
+        <td style="padding: 12px; color: #64748b;">UI组件库</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0; transition: background-color 0.2s;">
+        <td style="padding: 12px; font-weight: 500;">Tailwind CSS</td>
+        <td style="padding: 12px; color: #64748b;">^3.0.0</td>
+        <td style="padding: 12px; color: #64748b;">样式框架</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0; transition: background-color 0.2s;">
+        <td style="padding: 12px; font-weight: 500;">Vite</td>
+        <td style="padding: 12px; color: #64748b;">^4.0.0</td>
+        <td style="padding: 12px; color: #64748b;">构建工具</td>
+      </tr>
+      <tr style="transition: background-color 0.2s;">
+        <td style="padding: 12px; font-weight: 500;">Three.js</td>
+        <td style="padding: 12px; color: #64748b;">^0.160.0</td>
+        <td style="padding: 12px; color: #64748b;">3D模型渲染</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 ### 后端技术
 
-| 技术 | 版本 | 用途 |
-|------|------|------|
-| Node.js | ^18.0.0 | 运行环境 |
-| Express | ^4.0.0 | Web框架 |
-| SQLite | ^3.0.0 | 数据库 |
-| JWT | ^9.0.0 | 身份认证 |
-| Sequelize | ^6.0.0 | ORM框架 |
+<div style="overflow-x: auto; margin: 20px 0;">
+  <table style="width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);">
+    <thead style="background: linear-gradient(135deg, #166534, #22c55e); color: white;">
+      <tr>
+        <th style="padding: 12px; text-align: left; font-weight: 600;">技术</th>
+        <th style="padding: 12px; text-align: left; font-weight: 600;">版本</th>
+        <th style="padding: 12px; text-align: left; font-weight: 600;">用途</th>
+      </tr>
+    </thead>
+    <tbody style="background: white;">
+      <tr style="border-bottom: 1px solid #e2e8f0; transition: background-color 0.2s;">
+        <td style="padding: 12px; font-weight: 500;">Node.js</td>
+        <td style="padding: 12px; color: #64748b;">^18.0.0</td>
+        <td style="padding: 12px; color: #64748b;">运行环境</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0; transition: background-color 0.2s;">
+        <td style="padding: 12px; font-weight: 500;">Express</td>
+        <td style="padding: 12px; color: #64748b;">^4.0.0</td>
+        <td style="padding: 12px; color: #64748b;">Web框架</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0; transition: background-color 0.2s;">
+        <td style="padding: 12px; font-weight: 500;">SQLite</td>
+        <td style="padding: 12px; color: #64748b;">^3.0.0</td>
+        <td style="padding: 12px; color: #64748b;">数据库</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0; transition: background-color 0.2s;">
+        <td style="padding: 12px; font-weight: 500;">JWT</td>
+        <td style="padding: 12px; color: #64748b;">^9.0.0</td>
+        <td style="padding: 12px; color: #64748b;">身份认证</td>
+      </tr>
+      <tr style="transition: background-color 0.2s;">
+        <td style="padding: 12px; font-weight: 500;">Sequelize</td>
+        <td style="padding: 12px; color: #64748b;">^6.0.0</td>
+        <td style="padding: 12px; color: #64748b;">ORM框架</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 ## 📁 项目结构
 
@@ -122,7 +224,7 @@ Electric Motor Selector 是一个功能完整的在线电机选型系统，旨�
 └── README.md          # 项目说明文档
 ```
 
-## 🚀 安装和运行步骤
+## 🚀 快速开始
 
 ### 1. 环境准备
 
@@ -132,17 +234,13 @@ Electric Motor Selector 是一个功能完整的在线电机选型系统，旨�
 
 ### 2. 安装依赖
 
-#### 后端依赖
-
 ```bash
+# 安装后端依赖
 cd backend
 npm install
-```
 
-#### 前端依赖
-
-```bash
-cd frontend
+# 安装前端依赖
+cd ../frontend
 npm install
 ```
 
@@ -150,17 +248,13 @@ npm install
 
 后端已创建 `.env` 文件，包含以下配置：
 
-```
+```env
 PORT=5000
 JWT_SECRET=your-secret-key-for-jwt-token-generation
 JWT_EXPIRES_IN=1h
 ```
 
-### 4. 初始化数据库
-
-后端启动时会自动执行 `init.sql` 脚本，创建数据库表并插入示例数据。
-
-### 5. 启动服务
+### 4. 启动服务
 
 #### 启动后端服务
 
@@ -180,68 +274,39 @@ npm run dev
 
 前端服务将在 `http://localhost:5173` 启动。
 
-## 🎯 功能说明
+## 🎯 核心功能
 
 ### 🔍 电机选型功能
 
-#### 首页
-- 提供直观的电机参数筛选界面
-- 支持按功率、电压、转速、机座号等多维度筛选
-- 响应式设计，适配各种设备
-
-#### 产品列表页
-- 展示筛选后的电机型号
-- 支持分页浏览
-- 提供电机图片和基本参数预览
-- 支持按不同字段排序
-
-#### 产品详情页
-- 展示电机完整参数信息
-- 集成3D电机查看器，支持旋转、缩放查看
-- 提供电机技术文档下载（如果有）
-- 支持中英文切换
+- **智能筛选**：按功率、电压、转速、机座号等多维度筛选
+- **产品列表**：分页展示，支持排序和快速预览
+- **产品详情**：完整参数展示，3D模型查看，技术文档下载
 
 ### 🎨 视觉体验
 
-#### 3D电机查看器
-- 基于Three.js实现的3D模型渲染
-- 支持模型旋转、缩放
-- 提供不同视角预设
-- 高质量渲染效果
-
-#### 现代化UI设计
-- 采用渐变色彩和现代化卡片设计
-- 流畅的动画过渡效果
-- 响应式布局，适配各种屏幕尺寸
-- 支持深色/浅色主题切换
+- **3D电机查看器**：基于Three.js实现，支持旋转、缩放
+- **现代化UI**：渐变色彩、流畅动画、响应式布局
+- **主题切换**：支持深色/浅色主题
 
 ### 🌐 国际化支持
 
-- 支持中英文双语切换
+- 中英文双语切换
 - 基于i18next的国际化方案
-- 可轻松扩展更多语言
+- 易于扩展更多语言
 
 ### 🔐 认证和授权
 
-- 基于JWT的身份认证
-- 安全的密码哈希存储
-- 后台管理页面权限控制
+- JWT身份认证
+- 安全密码哈希存储
+- 后台管理权限控制
 - 登录状态持久化
 
-### 📊 后台管理功能
+### 📊 后台管理
 
-#### 登录页
-- 管理员登录界面
-- 用户名/密码验证
-- 默认账号：admin，密码：admin123
-
-#### 后台管理页
-- 电机信息的CRUD操作
-- 表格形式展示所有电机数据
-- 支持搜索和筛选
-- 批量操作功能
-- 电机参数编辑界面
-- 登出功能
+- 电机信息CRUD操作
+- 表格展示与批量操作
+- 搜索和筛选功能
+- 直观的编辑界面
 
 ## 📡 API文档
 
@@ -290,40 +355,32 @@ npm run dev
 ### 功能测试
 
 1. **电机选型功能**
-   - 在首页输入不同的筛选条件，验证筛选结果是否正确
-   - 点击查询按钮，检查是否跳转到产品列表页
-   - 检查产品列表的分页功能是否正常
+   - 在首页输入不同筛选条件，验证结果准确性
+   - 测试产品列表分页和排序功能
+   - 验证3D查看器的旋转、缩放功能
 
-2. **产品详情功能**
-   - 点击产品列表中的查看详情按钮，验证是否跳转到详情页
-   - 检查详情页的电机参数是否完整显示
-   - 测试3D查看器的旋转、缩放功能
-
-3. **后台管理功能**
-   - 使用默认账号登录后台
-   - 测试添加、编辑、删除电机功能
+2. **后台管理功能**
+   - 使用默认账号登录：admin / admin123
+   - 测试电机信息的增删改查
    - 验证搜索和筛选功能
-   - 测试登出功能
 
-4. **国际化功能**
-   - 测试语言切换按钮，验证界面语言是否正确切换
+3. **国际化功能**
+   - 测试语言切换按钮，验证界面语言切换
 
 ### API测试
 
-可以使用Postman或类似工具测试后端API：
-
+使用Postman或类似工具测试后端API：
 1. 测试登录API，获取JWT令牌
 2. 使用令牌测试需要认证的API端点
-3. 验证所有CRUD操作是否正常工作
+3. 验证所有CRUD操作
 
 ## ⚠️ 注意事项
 
-1. 确保Node.js版本在14.x以上
-2. 后端服务必须先启动，前端才能正常访问API
-3. 默认管理员账号：admin，密码：admin123
-4. 数据库会在第一次启动时自动创建
-5. 所有API请求都将记录在控制台中，便于调试
-6. 3D查看器需要现代浏览器支持WebGL
+- 确保Node.js版本在14.x以上
+- 后端服务必须先启动，前端才能正常访问API
+- 默认管理员账号：admin，密码：admin123
+- 数据库会在第一次启动时自动创建
+- 3D查看器需要现代浏览器支持WebGL
 
 ## 📄 许可证
 
@@ -354,5 +411,7 @@ npm run dev
 ---
 
 <div align="center">
-  <p>Made with ❤️ by Electric Motor Selector Team</p>
+  <p style="margin: 0; color: #64748b; font-size: 14px;">
+    Made with ❤️ by Electric Motor Selector Team
+  </p>
 </div>
