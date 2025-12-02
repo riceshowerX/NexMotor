@@ -386,24 +386,4 @@ npm run dev
 
 本项目采用 [Apache License 2.0](LICENSE) 许可证。
 
-## 🤝 贡献指南
 
-欢迎对本项目进行贡献！贡献前请阅读以下指南：
-
-1. Fork 本仓库
-2. 创建你的特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交你的更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启一个Pull Request
-
-## 🙏 致谢
-
-感谢所有为本项目做出贡献的开发者和支持者！
-
----
-
-<div align="center">
-  <p style="margin: 0; color: #64748b; font-size: 14px;">
-    Made with ❤️ by Electric Motor Selector Team
-  </p>
-</div>
