@@ -20,9 +20,6 @@
     🐛 报告问题
   </a>
   &nbsp;&nbsp;•&nbsp;&nbsp;
-  <a href="https://github.com/riceshowerX/NexMotor/pulls" style="color: #475569; text-decoration: none; font-weight: 500;">
-    💡 贡献代码
-  </a>
 </p>
 
 ## ✨ 核心功能亮点
