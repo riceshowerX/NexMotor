@@ -1,121 +1,107 @@
+# NexMotor  
+**新一代在线电机选型平台**
 
-# NexMotor - 在线电机选型系统
+一个由个人独立完成的全栈开源项目，目标是把繁琐的电机选型手册变成真正好用的交互工具。
 
-**专业 · 高效 · 智能的一站式电机选型平台**
-
-为电机制造商、分销商与终端用户打造的现代化在线选型工具，帮助您在海量产品中快速精准匹配最优电机方案。
-
-[![Stars](https://img.shields.io/github/stars/riceshowerX/NexMotor?style=flat-square)](https://github.com/riceshowerX/NexMotor)
-[![Forks](https://img.shields.io/github/forks/riceshowerX/NexMotor?style=flat-square)](https://github.com/riceshowerX/NexMotor)
-[![License](https://img.shields.io/github/license/riceshowerX/NexMotor?color=%231d4ed8&style=flat-square)](LICENSE)
-[![Vite](https://img.shields.io/badge/Built%20with%20Vite-646CFF?logo=vite&style=flat-square)](https://vitejs.dev/)
-[![React](https://img.shields.io/badge/React-18-%2361DAFB?logo=react&style=flat-square)](https://react.dev/)
+![GitHub stars](https://img.shields.io/github/stars/riceshowerX/NexMotor?style=for-the-badge&logo=github&color=1d4ed8)
+![GitHub forks](https://img.shields.io/github/forks/riceshowerX/NexMotor?style=for-the-badge&logo=github&color=1d4ed8)
+![License](https://img.shields.io/github/license/riceshowerX/NexMotor?style=for-the-badge&color=1d4ed8)
+![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react)
+![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge&logo=vite)
+![Three.js](https://img.shields.io/badge/Three.js-r150-000?style=for-the-badge&logo=three.js)
 
 <p align="center">
-  <a href="#" style="display: inline-block; padding: 12px 28px; background: linear-gradient(135deg, #1d4ed8, #3b82f6); color: white; text-decoration: none; border-radius: 12px; font-weight: 600; box-shadow: 0 4px 14px rgba(29,78,216,0.3); transition: all 0.3s;">
-    🚀 立即体验在线演示（待部署）
-  </a>
-  &nbsp;&nbsp;
-  <a href="https://github.com/riceshowerX/NexMotor/issues" style="color: #475569; text-decoration: none; font-weight: 500;">
-    🐛 报告问题
-  </a>
+  <a href="#">本地运行即完整演示</a>
+  <strong> • </strong>
+  <a href="https://github.com/riceshowerX/NexMotor/issues">报告问题</a>
+  <strong> • </strong>
+  <a href="https://github.com/riceshowerX/NexMotor/pulls">贡献代码</a>
 </p>
 
-## ✨ 核心功能亮点
+<p align="center">
+  <strong>智能筛选 • 3D 可视化 • 中英文切换 • 全平台响应式 • 完整后台管理</strong>
+</p>
 
-| 功能               | 描述                                                         |
-| ------------------ | ------------------------------------------------------------ |
-| 🎯 **智能多维筛选** | 功率、电压、转速、机座号、效率等参数实时组合筛选，秒级响应     |
-| 🔮 **3D 交互查看**  | 基于 Three.js 的全交互 3D 模型，支持旋转、缩放、细节高亮       |
-| 🌍 **中英文切换**   | 开箱即用的完整国际化（i18next），轻松扩展更多语言             |
-| 📱 **全平台响应式** | 完美适配 PC、平板、手机，提供一致流畅体验                    |
-| 🛡️ **安全认证**    | JWT + 密码哈希，管理员专属后台                               |
-| ⚙️ **完整后台管理** | 电机数据 CRUD、批量操作、搜索排序、图片/文档上传一应俱全      |
+## 核心功能一览
 
-## 🛠️ 技术栈
+| 功能                 | 描述                                                         |
+| -------------------- | ------------------------------------------------------------ |
+| 多维智能筛选         | 功率、电压、转速、机座号、效率、极数等十余项参数实时组合过滤 |
+| 交互式 3D 查看器     | 基于 Three.js 的完整 3D 模型，支持旋转、缩放、剖面、细节高亮 |
+| 国际化支持           | 中英文无缝切换，已基于 i18next 完成完整翻译，可轻松扩展 |
+| 全平台响应式设计     | 桌面端 / 平板 / 手机完美适配                                 |
+| 企业级后台管理系统   | 完整的电机数据 CRUD、批量导入导出、图片管理、权限控制        |
+| JWT 安全认证         | 管理员专属后台，密码哈希存储 + Token 有效期控制             |
 
-### 前端
-| 技术           | 版本       | 用途                     |
-| -------------- | ---------- | ------------------------ |
-| React          | ^18.3.0    | 核心框架                 |
-| Vite           | ^5.0.0     | 极致快速构建工具         |
-| React Router   | ^6.0.0     | 路由管理                 |
-| Ant Design     | ^5.0.0     | 企业级 UI 组件           |
-| Tailwind CSS   | ^3.4.0     | 原子化样式               |
-| Three.js       | ^0.160.0   | 3D 渲染引擎              |
-| Axios          | ^1.7.0     | API 请求                 |
-| i18next        | ^23.0.0    | 国际化方案               |
+## 技术栈
 
-### 后端
-| 技术       | 版本     | 用途                     |
-| ---------- | -------- | ------------------------ |
-| Node.js    | ≥18      | 运行时环境               |
-| Express    | ^4.19.0  | Web 框架                 |
-| SQLite     | -        | 轻量级嵌入式数据库       |
-| Sequelize  | ^6.37.0  | ORM                      |
-| JWT        | ^9.0.0   | 认证令牌                 |
+| 层级   | 技术方案                                   |
+| ------ | ------------------------------------------ |
+| 前端   | React 18 + Vite 5 + TypeScript             |
+| UI     | Ant Design 5 + Tailwind CSS                |
+| 3D     | Three.js + React-Three-Fiber + drei       |
+| 路由   | React Router 6                             |
+| 状态   | Context API + custom hooks                 |
+| 国际化 | i18next + react-i18next                    |
+| 后端   | Node.js + Express                          |
+| 数据库 | SQLite（开发） / 支持迁移至 PostgreSQL     |
+| ORM    | Sequelize                                  |
+| 认证   | JWT + bcrypt                               |
 
-## 📦 快速开始
+## 快速开始（≤ 3 分钟）
 
 ```bash
 # 克隆项目
 git clone https://github.com/riceshowerX/NexMotor.git
 cd NexMotor
 
-# 后端
+# 启动后端
 cd backend
 npm install
-cp .env.example .env    # 修改 JWT_SECRET 等配置
-npm start               # 默认 http://localhost:5000
+cp .env.example .env    # 可修改 JWT_SECRET
+npm start                # → http://localhost:5000
 
-# 前端（另开终端）
+# 启动前端（另开终端）
 cd ../frontend
 npm install
-npm run dev             # 默认 http://localhost:5173
+npm run dev              # → http://localhost:5173
 ```
 
-> 默认管理员账号：`admin` / `admin123`
+默认管理员账号：`admin` / `admin123`
 
-## 📂 项目结构
+## 项目结构
 
 ```
 NexMotor/
-├── backend/          # Express + SQLite 后端
-├── frontend/         # Vite + React 前端
-└── README.md
+├─ backend/          # Express + Sequelize 全栈后端
+└─ frontend/         # Vite + React + TypeScript 现代化前端
 ```
 
-## 🔗 API 快速参考
+## 重要声明
 
-| 方法   | 路由              | 功能           | 需认证 |
-| ------ | ----------------- | -------------- | ------ |
-| POST   | `/auth/login`     | 用户登录       | 否     |
-| GET    | `/motors`         | 获取电机列表   | 否     |
-| GET    | `/motors/:id`     | 获取电机详情   | 否     |
-| POST   | `/motors`         | 新增电机       | 是     |
-| PUT    | `/motors/:id`     | 更新电机       | 是     |
-| DELETE | `/motors/:id`     | 删除电机       | 是     |
+本项目为个人在业余时间独立开发与维护的开源作品，具备以下特性：
 
+- 所有电机参数、3D 模型、图片仅为演示用途，不代表任何真实产品性能。
+- 功能已达到可完整运行状态，但仍处于持续迭代阶段。
+- 安全机制为学习级实现，生产环境请自行完成完整的安全加固与测试。
+- 作者对因直接使用本项目导致的任何后果不承担责任。
 
-## ⚠️ 免责声明与重要说明
+欢迎学习、参考、fork 或在此基础上进行企业内部部署与二次开发。
 
-**本项目为个人业余时间开发的开源学习/展示项目**，旨在探索现代 Web 技术在工业选型场景中的应用，**不构成任何形式的商业产品或正式技术支持服务**。
+## 许可证
 
-- 项目中所有电机参数、3D 模型、性能曲线等仅为演示用途，不代表任何真实产品的实际性能，请勿用于工程设计、采购决策或生产环境。
-- 部分功能可能仍在开发或实验阶段，存在 Bug 或未完成状态。
-- 虽已实现基础安全措施，但仍属学习级代码，**请勿直接部署到公网或承载真实业务**。
-- 作者对因使用本项目产生的任何直接或间接损失不承担责任。
-
-如需在企业/正式项目中使用，欢迎在此基础上进行二次开发，但请自行完成充分测试、验证与安全加固。
-
-
-## 📄 许可证
-
-本项目基于 [Apache License 2.0](LICENSE) 开源，欢迎自由使用与二次开发。
+采用 [Apache License 2.0](LICENSE) 开源  
+允许商业使用、修改、分发，仅需保留版权与许可证声明。
 
 ---
 
 <div align="center">
-  <strong>让电机选型更简单、更智能</strong><br/>
-  NexMotor —— 您的专业选型助手（个人开源项目）
+  <strong>一个人也可以把事情做到极致</strong><br/>
+  NexMotor —— 由兴趣驱动，追求极致的个人全栈作品
 </div>
+
+<p align="center">
+  <a href="https://github.com/riceshowerX/NexMotor">
+    <img src="https://img.shields.io/static/v1?label=&message=Give%20a%20Star%20if%20you%20like%20it!&color=1d4ed8&style=for-the-badge" alt="Star this repo">
+  </a>
+</p>
