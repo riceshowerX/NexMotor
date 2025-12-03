@@ -19,7 +19,6 @@
   <a href="https://github.com/riceshowerX/NexMotor/issues" style="color: #475569; text-decoration: none; font-weight: 500;">
     🐛 报告问题
   </a>
-  &nbsp;&nbsp;•&nbsp;&nbsp;
 </p>
 
 ## ✨ 核心功能亮点
