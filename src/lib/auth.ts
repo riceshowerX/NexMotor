@@ -23,7 +23,7 @@ export function getAuthUser(request: NextRequest): AuthUser | null {
     }
 
     // 支持两种payload格式: id 或 userId
-    const userId = decoded.id || decoded.userId;
+    const userId = (decoded as any).id || decoded.userId;
     if (!userId) {
       return null;
     }
