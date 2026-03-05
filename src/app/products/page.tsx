@@ -1,19 +1,135 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { Search, SlidersHorizontal, Package, Heart, Scale, X, Check, Zap, Award } from 'lucide-react';
+import Image from 'next/image';
+import { Search, SlidersHorizontal, Package, Heart, Scale, X, Check, Zap, Award, ArrowUpDown, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Pagination } from '@/components/ui/pagination';
+import { Badge } from '@/components/ui/badge';
 import { useTranslation } from '@/context/LanguageContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useCompare } from '@/context/CompareContext';
 import type { Motor, MotorFilters } from '@/types/motor';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// 优化：使用 memo 避免不必要的重渲染
+const ProductCard = ({ motor, isFavorite, isComparing, onFavorite, onCompare }: any) => {
+  const [imageError, setImageError] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -8 }}
+      transition={{ duration: 0.3 }}
+    >
+      <Link href={`/products/${motor.id}`}>
+        <Card className="h-full group hover:shadow-2xl transition-all duration-300 border-2 hover:border-primary/50 overflow-hidden">
+          {/* 产品图片区域 */}
+          <div className="relative aspect-square bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 p-8">
+            {motor.imageUrl && !imageError ? (
+              <Image
+                src={motor.imageUrl}
+                alt={motor.model}
+                fill
+                className="object-contain group-hover:scale-110 transition-transform duration-500"
+                onError={() => setImageError(true)}
+                loading="lazy"
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <Package className="h-20 w-20 text-muted-foreground group-hover:scale-110 transition-transform duration-500" />
+              </div>
+            )}
+            <Badge className="absolute top-4 right-4 bg-blue-600 text-white">
+              {motor.frameSize}
+            </Badge>
+          </div>
+
+          {/* 产品信息 */}
+          <CardHeader className="pb-3">
+            <CardTitle className="text-xl flex items-center justify-between group-hover:text-primary transition-colors">
+              {motor.model}
+              {motor.efficiency >= 85 && (
+                <Badge variant="secondary" className="gap-1 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                  <Star className="h-3 w-3 fill-current" />
+                  高效
+                </Badge>
+              )}
+            </CardTitle>
+          </CardHeader>
+
+          <CardContent className="pb-3">
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="flex items-center gap-2">
+                <Zap className="h-4 w-4 text-blue-500" />
+                <div>
+                  <p className="text-xs text-muted-foreground">功率</p>
+                  <p className="font-semibold">{motor.power} kW</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Package className="h-4 w-4 text-cyan-500" />
+                <div>
+                  <p className="text-xs text-muted-foreground">转速</p>
+                  <p className="font-semibold">{motor.rpm} rpm</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <ArrowUpDown className="h-4 w-4 text-purple-500" />
+                <div>
+                  <p className="text-xs text-muted-foreground">电压</p>
+                  <p className="font-semibold">{motor.voltage} V</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Star className="h-4 w-4 text-amber-500" />
+                <div>
+                  <p className="text-xs text-muted-foreground">效率</p>
+                  <p className="font-semibold">{motor.efficiency}%</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+
+          <CardFooter className="pt-0">
+            <div className="flex gap-2 w-full">
+              <Button
+                variant={isFavorite(motor.id) ? "default" : "outline"}
+                size="sm"
+                className="flex-1 gap-1"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onFavorite(motor, e);
+                }}
+              >
+                <Heart className={`h-4 w-4 ${isFavorite(motor.id) ? 'fill-current' : ''}`} />
+                {isFavorite(motor.id) ? '已收藏' : '收藏'}
+              </Button>
+              <Button
+                variant={isComparing(motor.id) ? "default" : "outline"}
+                size="sm"
+                className="flex-1 gap-1"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onCompare(motor, e);
+                }}
+                disabled={isComparing(motor.id)}
+              >
+                <Scale className="h-4 w-4" />
+                {isComparing(motor.id) ? '已添加' : '对比'}
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
+      </Link>
+    </motion.div>
+  );
+};
 
 export default function ProductsPage() {
   const { t } = useTranslation();
@@ -24,11 +140,12 @@ export default function ProductsPage() {
   const [filters, setFilters] = useState<MotorFilters>({});
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 9;
+  const [sortOrder, setSortOrder] = useState<string>('default');
+  const itemsPerPage = 12;
 
   useEffect(() => {
     fetchMotors();
-  }, [filters]);
+  }, [filters, sortOrder]);
 
   const fetchMotors = async () => {
     setLoading(true);
@@ -53,18 +170,45 @@ export default function ProductsPage() {
     }
   };
 
+  // 优化：使用 useMemo 缓存排序和分页结果
+  const processedMotors = useMemo(() => {
+    let result = [...motors];
+
+    // 排序
+    switch (sortOrder) {
+      case 'power_asc':
+        result.sort((a, b) => a.power - b.power);
+        break;
+      case 'power_desc':
+        result.sort((a, b) => b.power - a.power);
+        break;
+      case 'rpm_asc':
+        result.sort((a, b) => a.rpm - b.rpm);
+        break;
+      case 'rpm_desc':
+        result.sort((a, b) => b.rpm - a.rpm);
+        break;
+      case 'efficiency_desc':
+        result.sort((a, b) => (b.efficiency || 0) - (a.efficiency || 0));
+        break;
+    }
+
+    return result;
+  }, [motors, sortOrder]);
+
+  const totalPages = Math.ceil(processedMotors.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentMotors = processedMotors.slice(startIndex, endIndex);
+
   const handleFilterChange = (key: keyof MotorFilters, value: any) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
 
   const resetFilters = () => {
     setFilters({});
+    setSortOrder('default');
   };
-
-  const totalPages = Math.ceil(motors.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentMotors = motors.slice(startIndex, endIndex);
 
   const handleFavorite = (motor: Motor, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -77,237 +221,195 @@ export default function ProductsPage() {
 
   const handleCompare = (motor: Motor, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (isComparing(motor.id)) {
-      // 已经在对比列表中，不做任何操作
-    } else {
-      addToCompare(motor);
-    }
+    addToCompare(motor);
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">{t('products.title')}</h1>
-        <p className="mt-2 text-muted-foreground">
-          {t('products.results', { count: motors.length })}
-        </p>
-      </div>
-
-      {/* Search and Filter Bar */}
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder={t('products.search')}
-            value={filters.model || ''}
-            onChange={(e) => handleFilterChange('model', e.target.value)}
-            className="pl-10"
-          />
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
+      {/* 页面标题 */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-8"
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
+              {t('products.title')}
+            </h1>
+            <p className="mt-2 text-lg text-muted-foreground">
+              共找到 <span className="font-semibold text-primary">{processedMotors.length}</span> 款产品
+            </p>
+          </div>
         </div>
-        <Button
-          variant="outline"
-          onClick={() => setShowFilters(!showFilters)}
-          className="gap-2"
-        >
-          <SlidersHorizontal className="h-4 w-4" />
-          {t('products.filter')}
-        </Button>
-        <Select
-          value={filters.sortBy || 'default'}
-          onValueChange={(value) => handleFilterChange('sortBy', value === 'default' ? undefined : value)}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder={t('products.sort')} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="default">{t('products.sort_options.default')}</SelectItem>
-            <SelectItem value="power_asc">{t('products.sort_options.power_asc')}</SelectItem>
-            <SelectItem value="power_desc">{t('products.sort_options.power_desc')}</SelectItem>
-            <SelectItem value="rpm_asc">{t('products.sort_options.rpm_asc')}</SelectItem>
-            <SelectItem value="rpm_desc">{t('products.sort_options.rpm_desc')}</SelectItem>
-            <SelectItem value="efficiency_desc">{t('products.sort_options.efficiency_desc')}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      </motion.div>
 
-      {/* Filters Panel */}
-      {showFilters && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-          className="mb-6 rounded-lg border-2 border-primary/20 bg-gradient-to-br from-blue-50/50 to-cyan-50/50 dark:from-blue-950/20 dark:to-cyan-950/20 p-6"
-        >
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <div>
-              <Label>{t('products.fields.power')} (kW)</Label>
-              <div className="mt-2 flex gap-2">
+      {/* 搜索和筛选栏 */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.1 }}
+        className="mb-6"
+      >
+        <Card className="border-2">
+          <CardContent className="p-4">
+            <div className="flex flex-col gap-4 lg:flex-row">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
-                  type="number"
-                  placeholder="Min"
-                  value={filters.power_min || ''}
-                  onChange={(e) => handleFilterChange('power_min', e.target.value ? Number(e.target.value) : undefined)}
-                  className="bg-background"
-                />
-                <span className="flex items-center text-muted-foreground">-</span>
-                <Input
-                  type="number"
-                  placeholder="Max"
-                  value={filters.power_max || ''}
-                  onChange={(e) => handleFilterChange('power_max', e.target.value ? Number(e.target.value) : undefined)}
-                  className="bg-background"
+                  placeholder="搜索产品型号..."
+                  value={filters.model || ''}
+                  onChange={(e) => handleFilterChange('model', e.target.value)}
+                  className="pl-10 h-12 text-lg"
                 />
               </div>
-            </div>
-
-            <div>
-              <Label>{t('products.fields.voltage')} (V)</Label>
-              <Select
-                value={filters.voltage?.toString() || ''}
-                onValueChange={(value) => handleFilterChange('voltage', value ? Number(value) : undefined)}
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => setShowFilters(!showFilters)}
+                className={`gap-2 ${showFilters ? 'bg-primary/10' : ''}`}
               >
-                <SelectTrigger className="mt-2 bg-background">
-                  <SelectValue placeholder={t('common.all')} />
+                <SlidersHorizontal className="h-5 w-5" />
+                {showFilters ? '收起筛选' : '高级筛选'}
+              </Button>
+              <Select
+                value={sortOrder}
+                onValueChange={setSortOrder}
+              >
+                <SelectTrigger className="w-[200px] h-12">
+                  <ArrowUpDown className="h-4 w-4 mr-2 text-muted-foreground" />
+                  <SelectValue placeholder="排序方式" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">{t('common.all')}</SelectItem>
-                  <SelectItem value="380">380V</SelectItem>
-                  <SelectItem value="220">220V</SelectItem>
-                  <SelectItem value="660">660V</SelectItem>
-                  <SelectItem value="690">690V</SelectItem>
+                  <SelectItem value="default">默认排序</SelectItem>
+                  <SelectItem value="power_asc">功率从小到大</SelectItem>
+                  <SelectItem value="power_desc">功率从大到小</SelectItem>
+                  <SelectItem value="rpm_asc">转速从小到大</SelectItem>
+                  <SelectItem value="rpm_desc">转速从大到小</SelectItem>
+                  <SelectItem value="efficiency_desc">效率从高到低</SelectItem>
                 </SelectContent>
               </Select>
             </div>
+          </CardContent>
+        </Card>
+      </motion.div>
 
-            <div>
-              <Label>{t('products.fields.rpm')}</Label>
-              <div className="mt-2 flex gap-2">
-                <Input
-                  type="number"
-                  placeholder="Min"
-                  value={filters.rpm_min || ''}
-                  onChange={(e) => handleFilterChange('rpm_min', e.target.value ? Number(e.target.value) : undefined)}
-                  className="bg-background"
-                />
-                <span className="flex items-center text-muted-foreground">-</span>
-                <Input
-                  type="number"
-                  placeholder="Max"
-                  value={filters.rpm_max || ''}
-                  onChange={(e) => handleFilterChange('rpm_max', e.target.value ? Number(e.target.value) : undefined)}
-                  className="bg-background"
-                />
-              </div>
-            </div>
+      {/* 高级筛选面板 */}
+      <AnimatePresence>
+        {showFilters && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mb-6"
+          >
+            <Card className="border-2 border-primary/30 bg-gradient-to-br from-blue-50/50 to-cyan-50/50 dark:from-blue-950/20 dark:to-cyan-950/20">
+              <CardContent className="p-6">
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                  <div>
+                    <Label>功率范围 (kW)</Label>
+                    <div className="mt-2 flex gap-2">
+                      <Input
+                        type="number"
+                        placeholder="最小"
+                        value={filters.power_min || ''}
+                        onChange={(e) => handleFilterChange('power_min', e.target.value ? Number(e.target.value) : undefined)}
+                      />
+                      <span className="flex items-center text-muted-foreground">-</span>
+                      <Input
+                        type="number"
+                        placeholder="最大"
+                        value={filters.power_max || ''}
+                        onChange={(e) => handleFilterChange('power_max', e.target.value ? Number(e.target.value) : undefined)}
+                      />
+                    </div>
+                  </div>
 
-            <div>
-              <Label>{t('products.fields.efficiency')} (%)</Label>
-              <div className="mt-2 flex gap-2">
-                <Input
-                  type="number"
-                  placeholder="Min"
-                  value={filters.efficiency_min || ''}
-                  onChange={(e) => handleFilterChange('efficiency_min', e.target.value ? Number(e.target.value) : undefined)}
-                  className="bg-background"
-                />
-                <span className="flex items-center text-muted-foreground">-</span>
-                <Input
-                  type="number"
-                  placeholder="Max"
-                  value={filters.efficiency_max || ''}
-                  onChange={(e) => handleFilterChange('efficiency_max', e.target.value ? Number(e.target.value) : undefined)}
-                  className="bg-background"
-                />
-              </div>
-            </div>
+                  <div>
+                    <Label>额定电压 (V)</Label>
+                    <Select
+                      value={filters.voltage?.toString() || ''}
+                      onValueChange={(value) => handleFilterChange('voltage', value ? Number(value) : undefined)}
+                    >
+                      <SelectTrigger className="mt-2">
+                        <SelectValue placeholder="全部" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">全部</SelectItem>
+                        <SelectItem value="380">380V</SelectItem>
+                        <SelectItem value="220">220V</SelectItem>
+                        <SelectItem value="660">660V</SelectItem>
+                        <SelectItem value="690">690V</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-            <div>
-              <Label>{t('products.fields.frameSize')}</Label>
-              <Input
-                placeholder="e.g., 90S"
-                value={filters.frameSize || ''}
-                onChange={(e) => handleFilterChange('frameSize', e.target.value)}
-                className="mt-2 bg-background"
-              />
-            </div>
+                  <div>
+                    <Label>防护等级</Label>
+                    <Select
+                      value={filters.ip || ''}
+                      onValueChange={(value) => handleFilterChange('ip', value || undefined)}
+                    >
+                      <SelectTrigger className="mt-2">
+                        <SelectValue placeholder="全部" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">全部</SelectItem>
+                        <SelectItem value="IP54">IP54</SelectItem>
+                        <SelectItem value="IP55">IP55</SelectItem>
+                        <SelectItem value="IP56">IP56</SelectItem>
+                        <SelectItem value="IP65">IP65</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-            <div>
-              <Label>{t('products.fields.poles')}</Label>
-              <Select
-                value={filters.poles?.toString() || ''}
-                onValueChange={(value) => handleFilterChange('poles', value ? Number(value) : undefined)}
-              >
-                <SelectTrigger className="mt-2 bg-background">
-                  <SelectValue placeholder={t('common.all')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">{t('common.all')}</SelectItem>
-                  <SelectItem value="2">2极</SelectItem>
-                  <SelectItem value="4">4极</SelectItem>
-                  <SelectItem value="6">6极</SelectItem>
-                  <SelectItem value="8">8极</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+                  <div>
+                    <Label>绝缘等级</Label>
+                    <Select
+                      value={filters.insulation || ''}
+                      onValueChange={(value) => handleFilterChange('insulation', value || undefined)}
+                    >
+                      <SelectTrigger className="mt-2">
+                        <SelectValue placeholder="全部" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">全部</SelectItem>
+                        <SelectItem value="B">B级</SelectItem>
+                        <SelectItem value="F">F级</SelectItem>
+                        <SelectItem value="H">H级</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
 
-            <div>
-              <Label>{t('products.fields.ip')}</Label>
-              <Select
-                value={filters.ip || ''}
-                onValueChange={(value) => handleFilterChange('ip', value || undefined)}
-              >
-                <SelectTrigger className="mt-2 bg-background">
-                  <SelectValue placeholder={t('common.all')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">{t('common.all')}</SelectItem>
-                  <SelectItem value="IP54">IP54</SelectItem>
-                  <SelectItem value="IP55">IP55</SelectItem>
-                  <SelectItem value="IP56">IP56</SelectItem>
-                  <SelectItem value="IP65">IP65</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+                <div className="mt-6 flex flex-wrap gap-3 justify-end">
+                  <Button variant="outline" onClick={resetFilters} className="gap-2">
+                    <X className="h-4 w-4" />
+                    重置筛选
+                  </Button>
+                  <Button onClick={() => setShowFilters(false)} className="gap-2 bg-gradient-to-r from-blue-600 to-cyan-600">
+                    <Check className="h-4 w-4" />
+                    应用筛选
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-            <div>
-              <Label>{t('products.fields.insulation')}</Label>
-              <Select
-                value={filters.insulation || ''}
-                onValueChange={(value) => handleFilterChange('insulation', value || undefined)}
-              >
-                <SelectTrigger className="mt-2 bg-background">
-                  <SelectValue placeholder={t('common.all')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">{t('common.all')}</SelectItem>
-                  <SelectItem value="B">B级</SelectItem>
-                  <SelectItem value="F">F级</SelectItem>
-                  <SelectItem value="H">H级</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="mt-6 flex flex-wrap gap-2 justify-end">
-            <Button variant="outline" onClick={resetFilters} className="gap-2">
-              <X className="h-4 w-4" />
-              {t('products.reset')}
-            </Button>
-            <Button onClick={() => setShowFilters(false)} className="gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
-              <Check className="h-4 w-4" />
-              {t('common.submit')}
-            </Button>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Quick Filter Tags */}
-      <div className="mb-6 flex flex-wrap gap-2">
+      {/* 快速筛选标签 */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="mb-6 flex flex-wrap gap-2"
+      >
         <Button
           variant="outline"
           size="sm"
           onClick={() => setFilters({ poles: 4 })}
-          className="gap-2 hover:border-primary"
+          className="gap-2 hover:border-primary hover:bg-primary/5 transition-all"
         >
           <Zap className="h-3 w-3" />
           4极电机
@@ -316,7 +418,7 @@ export default function ProductsPage() {
           variant="outline"
           size="sm"
           onClick={() => setFilters({ voltage: 380 })}
-          className="gap-2 hover:border-primary"
+          className="gap-2 hover:border-primary hover:bg-primary/5 transition-all"
         >
           <Zap className="h-3 w-3" />
           380V
@@ -325,7 +427,7 @@ export default function ProductsPage() {
           variant="outline"
           size="sm"
           onClick={() => setFilters({ frameSize: '90S' })}
-          className="gap-2 hover:border-primary"
+          className="gap-2 hover:border-primary hover:bg-primary/5 transition-all"
         >
           <Zap className="h-3 w-3" />
           90S机座
@@ -334,137 +436,124 @@ export default function ProductsPage() {
           variant="outline"
           size="sm"
           onClick={() => setFilters({ efficiency_min: 90 })}
-          className="gap-2 hover:border-primary"
+          className="gap-2 hover:border-primary hover:bg-primary/5 transition-all"
         >
           <Award className="h-3 w-3" />
           高效率≥90%
         </Button>
-      </div>
+      </motion.div>
 
-      {/* Products Grid */}
+      {/* 产品网格 */}
       {loading ? (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {[...Array(6)].map((_, i) => (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {[...Array(8)].map((_, i) => (
             <Card key={i} className="animate-pulse">
+              <div className="aspect-square bg-muted" />
               <CardHeader>
-                <div className="h-4 w-3/4 rounded bg-muted" />
-                <div className="mt-2 h-3 w-1/2 rounded bg-muted" />
+                <div className="h-6 w-3/4 rounded bg-muted" />
+                <div className="mt-2 h-4 w-1/2 rounded bg-muted" />
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <div className="h-3 w-full rounded bg-muted" />
-                  <div className="h-3 w-2/3 rounded bg-muted" />
+                  <div className="h-4 w-full rounded bg-muted" />
+                  <div className="h-4 w-2/3 rounded bg-muted" />
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
-      ) : motors.length === 0 ? (
-        <div className="text-center py-12">
-          <Package className="mx-auto h-12 w-12 text-muted-foreground" />
-          <p className="mt-4 text-muted-foreground">{t('products.no_results')}</p>
-        </div>
+      ) : processedMotors.length === 0 ? (
+        <Card className="border-2">
+          <CardContent className="py-20 text-center">
+            <Package className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
+            <p className="text-xl text-muted-foreground mb-4">{t('products.no_results')}</p>
+            <Button onClick={resetFilters} variant="outline" className="gap-2">
+              <X className="h-4 w-4" />
+              清除筛选条件
+            </Button>
+          </CardContent>
+        </Card>
       ) : (
         <>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            transition={{ delay: 0.3 }}
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
           >
-            {currentMotors.map((motor, index) => (
-              <motion.div
+            {currentMotors.map((motor) => (
+              <ProductCard
                 key={motor.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-              >
-                <Link href={`/products/${motor.id}`}>
-                  <Card className="h-full transition-all hover:shadow-lg cursor-pointer">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Package className="h-5 w-5 text-primary" />
-                        {motor.model}
-                      </CardTitle>
-                      <CardDescription>{motor.frameSize} 机座号</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-2 gap-2 text-sm">
-                        <div>
-                          <span className="text-muted-foreground">{t('products.fields.power')}:</span>
-                          <span className="ml-1 font-medium">{motor.power} kW</span>
-                        </div>
-                        <div>
-                          <span className="text-muted-foreground">{t('products.fields.rpm')}:</span>
-                          <span className="ml-1 font-medium">{motor.rpm}</span>
-                        </div>
-                        <div>
-                          <span className="text-muted-foreground">{t('products.fields.voltage')}:</span>
-                          <span className="ml-1 font-medium">{motor.voltage} V</span>
-                        </div>
-                        <div>
-                          <span className="text-muted-foreground">{t('products.fields.efficiency')}:</span>
-                          <span className="ml-1 font-medium">{motor.efficiency}%</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                    <CardFooter className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1"
-                        onClick={(e) => handleFavorite(motor, e)}
-                      >
-                        <Heart className={`h-4 w-4 mr-1 ${isFavorite(motor.id) ? 'fill-current text-red-500' : ''}`} />
-                        {isFavorite(motor.id) ? '已收藏' : '收藏'}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1"
-                        onClick={(e) => handleCompare(motor, e)}
-                      >
-                        <Scale className={`h-4 w-4 mr-1 ${isComparing(motor.id) ? 'text-blue-500' : ''}`} />
-                        {isComparing(motor.id) ? '已添加' : '对比'}
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </Link>
-              </motion.div>
+                motor={motor}
+                isFavorite={isFavorite}
+                isComparing={isComparing}
+                onFavorite={handleFavorite}
+                onCompare={handleCompare}
+              />
             ))}
           </motion.div>
 
-          {/* Pagination */}
+          {/* 分页 */}
           {totalPages > 1 && (
-            <div className="mt-8 flex justify-center">
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                  disabled={currentPage === 1}
-                >
-                  上一页
-                </Button>
-                <div className="flex gap-1">
-                  {[...Array(totalPages)].map((_, i) => (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="mt-12 flex items-center justify-center gap-2"
+            >
+              <Button
+                variant="outline"
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                size="lg"
+              >
+                上一页
+              </Button>
+              <div className="flex items-center gap-1">
+                {[...Array(totalPages)].map((_, i) => {
+                  const page = i + 1;
+                  const isCurrentPage = page === currentPage;
+
+                  // 优化：只显示部分页码
+                  let showPage = true;
+                  if (totalPages > 7) {
+                    if (page === 1 || page === totalPages) {
+                      showPage = true;
+                    } else if (page >= currentPage - 1 && page <= currentPage + 1) {
+                      showPage = true;
+                    } else {
+                      showPage = false;
+                    }
+                  }
+
+                  if (!showPage && (page === 2 || page === totalPages - 1)) {
+                    return <span key={i} className="px-2">...</span>;
+                  }
+
+                  if (!showPage) return null;
+
+                  return (
                     <Button
-                      key={i + 1}
-                      variant={currentPage === i + 1 ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setCurrentPage(i + 1)}
+                      key={page}
+                      variant={isCurrentPage ? "default" : "outline"}
+                      size="lg"
+                      onClick={() => setCurrentPage(page)}
+                      className="min-w-[48px]"
                     >
-                      {i + 1}
+                      {page}
                     </Button>
-                  ))}
-                </div>
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                  disabled={currentPage === totalPages}
-                >
-                  下一页
-                </Button>
+                  );
+                })}
               </div>
-            </div>
+              <Button
+                variant="outline"
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                size="lg"
+              >
+                下一页
+              </Button>
+            </motion.div>
           )}
         </>
       )}
