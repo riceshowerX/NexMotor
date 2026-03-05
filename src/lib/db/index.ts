@@ -23,6 +23,7 @@ export function initializeDatabase() {
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT UNIQUE NOT NULL,
+      email TEXT DEFAULT '',
       password TEXT NOT NULL,
       role TEXT DEFAULT 'user',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -33,7 +34,7 @@ export function initializeDatabase() {
   const bcrypt = require('bcryptjs');
   const hashedPassword = bcrypt.hashSync('admin123', 10);
   try {
-    db.prepare('INSERT INTO users (username, password, role) VALUES (?, ?, ?)').run('admin', hashedPassword, 'admin');
+    db.prepare('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)').run('admin', 'admin@nexmotor.com', hashedPassword, 'admin');
   } catch (err) {
     // 用户已存在，忽略错误
   }
@@ -65,6 +66,80 @@ export function initializeDatabase() {
       imageUrl TEXT
     )
   `);
+
+  // 创建留言表
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS messages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      phone TEXT,
+      company TEXT,
+      subject TEXT NOT NULL,
+      content TEXT NOT NULL,
+      status TEXT DEFAULT 'unread',
+      reply TEXT,
+      replied_at DATETIME,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // 创建系统配置表
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS system_config (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      key TEXT UNIQUE NOT NULL,
+      value TEXT,
+      description TEXT,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // 创建轮播图表
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS banners (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT,
+      subtitle TEXT,
+      image_url TEXT,
+      link_url TEXT,
+      order_num INTEGER DEFAULT 0,
+      is_active INTEGER DEFAULT 1,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // 创建公告表
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS announcements (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      content TEXT NOT NULL,
+      type TEXT DEFAULT 'info',
+      is_active INTEGER DEFAULT 1,
+      priority INTEGER DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // 插入默认系统配置
+  const defaultConfigs = [
+    { key: 'site_title', value: 'NexMotor - 新一代在线电机选型平台', description: '网站标题' },
+    { key: 'site_description', value: '智能筛选 · 3D 可视化 · 中英文切换 · 全平台响应式', description: '网站描述' },
+    { key: 'contact_email', value: 'contact@nexmotor.com', description: '联系邮箱' },
+    { key: 'contact_phone', value: '+86 021-12345678', description: '联系电话' },
+    { key: 'contact_address', value: '上海市浦东新区张江高科技园区XX路XX号', description: '公司地址' },
+    { key: 'company_name', value: 'NexMotor 电机有限公司', description: '公司名称' },
+  ];
+
+  const insertConfig = db.prepare('INSERT OR IGNORE INTO system_config (key, value, description) VALUES (?, ?, ?)');
+  const insertConfigMany = db.transaction((configs: any[]) => {
+    for (const config of configs) {
+      insertConfig.run(config.key, config.value, config.description);
+    }
+  });
+  insertConfigMany(defaultConfigs);
 
   // 插入示例数据（如果表为空）
   const count = db.prepare('SELECT COUNT(*) as count FROM motors').get() as { count: number };

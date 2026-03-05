@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MapPin, Phone, Mail, Clock, Send, MessageSquare, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,25 +21,66 @@ export default function ContactPage() {
     message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [config, setConfig] = useState<any>(null);
+
+  useEffect(() => {
+    fetchConfig();
+  }, []);
+
+  const fetchConfig = async () => {
+    try {
+      const response = await fetch('/api/public/config');
+      const data = await response.json();
+      if (data.success) {
+        setConfig(data.data);
+      }
+    } catch (error) {
+      console.error('获取配置失败:', error);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // 模拟提交
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      const response = await fetch('/api/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          company: formData.company,
+          subject: formData.subject,
+          message: formData.message,
+        }),
+      });
 
-    toast.success('您的留言已提交，我们会尽快回复您！');
+      const data = await response.json();
 
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      company: '',
-      subject: '',
-      message: '',
-    });
-    setIsSubmitting(false);
+      if (data.success) {
+        toast.success(data.message || '您的留言已提交，我们会尽快回复您！');
+
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          company: '',
+          subject: '',
+          message: '',
+        });
+      } else {
+        toast.error(data.message || '提交失败，请稍后重试');
+      }
+    } catch (error) {
+      console.error('提交留言失败:', error);
+      toast.error('提交失败，请稍后重试');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -53,25 +94,25 @@ export default function ContactPage() {
     {
       icon: MapPin,
       title: '公司地址',
-      content: '上海市浦东新区张江高科技园区XX路XX号',
+      content: config?.address || '上海市浦东新区张江高科技园区XX路XX号',
       color: 'from-blue-500 to-cyan-500',
     },
     {
       icon: Phone,
       title: '联系电话',
-      content: '+86 021-12345678',
+      content: config?.contact_phone || '+86 021-12345678',
       color: 'from-cyan-500 to-sky-500',
     },
     {
       icon: Mail,
       title: '电子邮箱',
-      content: 'contact@nexmotor.com',
+      content: config?.contact_email || 'contact@nexmotor.com',
       color: 'from-sky-500 to-blue-500',
     },
     {
       icon: Clock,
       title: '工作时间',
-      content: '周一至周五 9:00 - 18:00',
+      content: config?.working_hours || '周一至周五 9:00 - 18:00',
       color: 'from-blue-600 to-cyan-600',
     },
   ];
