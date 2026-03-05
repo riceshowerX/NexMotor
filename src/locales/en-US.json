@@ -1,0 +1,129 @@
+{
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "quick_select": "Quick Select",
+    "admin": "Admin"
+  },
+  "home": {
+    "title": "Next-Generation Online Motor Selection Platform",
+    "subtitle": "Smart Filtering · 3D Visualization · Bilingual · Responsive Design",
+    "features": {
+      "smart_filter": {
+        "title": "Smart Filtering",
+        "desc": "Real-time combination filtering by power, voltage, speed, frame size and more"
+      },
+      "3d_viewer": {
+        "title": "3D Visualization",
+        "desc": "Complete 3D model based on Three.js, supports rotation, zoom, section view and detail highlighting"
+      },
+      "i18n": {
+        "title": "Internationalization",
+        "desc": "Seamless Chinese/English switching, easily extendable to more languages"
+      },
+      "responsive": {
+        "title": "Responsive Design",
+        "desc": "Perfect adaptation for desktop, tablet and mobile devices"
+      }
+    },
+    "cta": {
+      "explore": "Explore Products",
+      "quick_select": "Quick Select"
+    }
+  },
+  "products": {
+    "title": "Products",
+    "filter": "Filter",
+    "reset": "Reset",
+    "sort": "Sort",
+    "search": "Search",
+    "results": "Found {count} products",
+    "no_results": "No products found matching the criteria",
+    "fields": {
+      "model": "Model",
+      "frameSize": "Frame Size",
+      "power": "Power (kW)",
+      "voltage": "Voltage (V)",
+      "rpm": "Speed (rpm)",
+      "efficiency": "Efficiency (%)",
+      "poles": "Poles",
+      "ip": "IP Rating",
+      "insulation": "Insulation Class"
+    },
+    "sort_options": {
+      "default": "Default",
+      "power_asc": "Power (Low to High)",
+      "power_desc": "Power (High to Low)",
+      "rpm_asc": "Speed (Low to High)",
+      "rpm_desc": "Speed (High to Low)",
+      "efficiency_desc": "Efficiency (High to Low)"
+    }
+  },
+  "detail": {
+    "title": "Product Details",
+    "back": "Back to List",
+    "3d_view": "3D View",
+    "params": "Technical Parameters",
+    "description": "Product Description",
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete"
+    }
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "username": "Username",
+    "password": "Password",
+    "login_btn": "Login",
+    "login_success": "Login successful",
+    "login_failed": "Login failed",
+    "logout_success": "Logout successful",
+    "profile": "Profile"
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "add": "Add Product",
+    "edit": "Edit",
+    "delete": "Delete",
+    "delete_confirm": "Are you sure you want to delete this product?",
+    "delete_success": "Delete successful",
+    "save": "Save",
+    "cancel": "Cancel",
+    "import": "Import",
+    "export": "Export",
+    "form": {
+      "model": "Model",
+      "frameSize": "Frame Size",
+      "power": "Power (kW)",
+      "voltage": "Voltage (V)",
+      "current": "Current (A)",
+      "rpm": "Speed (rpm)",
+      "efficiency": "Efficiency (%)",
+      "powerFactor": "Power Factor",
+      "frequency": "Frequency (Hz)",
+      "poles": "Poles",
+      "ip": "IP Rating",
+      "insulation": "Insulation Class",
+      "mounting": "Mounting",
+      "weight": "Weight (kg)",
+      "connection": "Connection",
+      "lockedRotorTorque": "Locked Rotor Torque (Nm)",
+      "maxTorque": "Maximum Torque (Nm)",
+      "startingCurrent": "Starting Current (A)",
+      "noise": "Noise (dB)",
+      "description": "Description",
+      "imageUrl": "Image URL"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "success": "Success",
+    "error": "Error",
+    "required": "This field is required",
+    "all": "All"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "nav": {
+    "home": "首页",
+    "products": "产品中心",
+    "quick_select": "快速选型",
+    "admin": "管理后台"
+  },
+  "home": {
+    "title": "新一代在线电机选型平台",
+    "subtitle": "智能筛选 · 3D 可视化 · 中英文切换 · 全平台响应式",
+    "features": {
+      "smart_filter": {
+        "title": "智能筛选",
+        "desc": "功率、电压、转速、机座号等十余项参数实时组合过滤"
+      },
+      "3d_viewer": {
+        "title": "3D 可视化",
+        "desc": "基于 Three.js 的完整 3D 模型，支持旋转、缩放、剖面、细节高亮"
+      },
+      "i18n": {
+        "title": "国际化支持",
+        "desc": "中英文无缝切换，可轻松扩展更多语言"
+      },
+      "responsive": {
+        "title": "响应式设计",
+        "desc": "桌面端 / 平板 / 手机完美适配"
+      }
+    },
+    "cta": {
+      "explore": "探索产品",
+      "quick_select": "快速选型"
+    }
+  },
+  "products": {
+    "title": "产品中心",
+    "filter": "筛选",
+    "reset": "重置",
+    "sort": "排序",
+    "search": "搜索",
+    "results": "找到 {count} 个产品",
+    "no_results": "没有找到符合条件的产品",
+    "fields": {
+      "model": "型号",
+      "frameSize": "机座号",
+      "power": "功率 (kW)",
+      "voltage": "电压 (V)",
+      "rpm": "转速 (rpm)",
+      "efficiency": "效率 (%)",
+      "poles": "极数",
+      "ip": "防护等级",
+      "insulation": "绝缘等级"
+    },
+    "sort_options": {
+      "default": "默认",
+      "power_asc": "功率从小到大",
+      "power_desc": "功率从大到小",
+      "rpm_asc": "转速从小到大",
+      "rpm_desc": "转速从大到小",
+      "efficiency_desc": "效率从高到低"
+    }
+  },
+  "detail": {
+    "title": "产品详情",
+    "back": "返回列表",
+    "3d_view": "3D 视图",
+    "params": "技术参数",
+    "description": "产品描述",
+    "actions": {
+      "edit": "编辑",
+      "delete": "删除"
+    }
+  },
+  "auth": {
+    "login": "登录",
+    "logout": "退出登录",
+    "username": "用户名",
+    "password": "密码",
+    "login_btn": "登录",
+    "login_success": "登录成功",
+    "login_failed": "登录失败",
+    "logout_success": "退出成功",
+    "profile": "个人中心"
+  },
+  "admin": {
+    "title": "管理后台",
+    "add": "添加产品",
+    "edit": "编辑",
+    "delete": "删除",
+    "delete_confirm": "确定要删除这个产品吗？",
+    "delete_success": "删除成功",
+    "save": "保存",
+    "cancel": "取消",
+    "import": "导入",
+    "export": "导出",
+    "form": {
+      "model": "型号",
+      "frameSize": "机座号",
+      "power": "功率 (kW)",
+      "voltage": "电压 (V)",
+      "current": "电流 (A)",
+      "rpm": "转速 (rpm)",
+      "efficiency": "效率 (%)",
+      "powerFactor": "功率因数",
+      "frequency": "频率 (Hz)",
+      "poles": "极数",
+      "ip": "防护等级",
+      "insulation": "绝缘等级",
+      "mounting": "安装方式",
+      "weight": "重量 (kg)",
+      "connection": "接线方式",
+      "lockedRotorTorque": "堵转转矩 (Nm)",
+      "maxTorque": "最大转矩 (Nm)",
+      "startingCurrent": "启动电流 (A)",
+      "noise": "噪声 (dB)",
+      "description": "产品描述",
+      "imageUrl": "图片 URL"
+    }
+  },
+  "common": {
+    "loading": "加载中...",
+    "submit": "提交",
+    "cancel": "取消",
+    "confirm": "确认",
+    "success": "操作成功",
+    "error": "操作失败",
+    "required": "此项必填",
+    "all": "全部"
+  }
+}
