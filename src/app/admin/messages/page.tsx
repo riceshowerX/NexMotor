@@ -84,7 +84,7 @@ export default function AdminMessagesPage() {
       });
       const data = await response.json();
       if (data.success) {
-        setMessages(data.data.messages || []);
+        setMessages(data.data || []);
       }
     } catch (error) {
       console.error('获取留言失败:', error);
