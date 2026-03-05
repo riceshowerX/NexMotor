@@ -165,7 +165,7 @@ export default function ProductDetailPage() {
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
                 {motor.model}
               </h1>
               <Badge variant="secondary" className="text-sm">
@@ -243,7 +243,7 @@ export default function ProductDetailPage() {
       >
         <Card className="overflow-hidden border-2">
           <CardContent className="p-0">
-            <div className="relative aspect-video bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
+            <div className="relative aspect-video bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-gray-900 dark:to-gray-800">
               <Dialog>
                 <DialogTrigger asChild>
                   <Button
@@ -282,7 +282,7 @@ export default function ProductDetailPage() {
           transition={{ delay: 0.2 }}
           className="mb-8"
         >
-          <Card className="border-2 bg-gradient-to-br from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20">
+          <Card className="border-2 bg-gradient-to-br from-blue-50/50 to-cyan-50/50 dark:from-blue-950/20 dark:to-cyan-950/20">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-xl">
                 <Package className="h-5 w-5 text-primary" />
@@ -305,7 +305,7 @@ export default function ProductDetailPage() {
         transition={{ delay: 0.3 }}
       >
         <Card className="border-2">
-          <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+          <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white">
             <CardTitle className="flex items-center gap-2 text-xl">
               <Package className="h-5 w-5" />
               技术参数
@@ -325,7 +325,7 @@ export default function ProductDetailPage() {
                     transition={{ delay: 0.4 + index * 0.05 }}
                     className={`p-4 rounded-lg border ${
                       field.highlight
-                        ? 'bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 border-blue-200 dark:border-blue-800'
+                        ? 'bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30 border-blue-200 dark:border-blue-800'
                         : 'bg-muted/30'
                     }`}
                   >

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Package, Search, Settings, Menu, X, User, LogOut, Heart, Scale } from 'lucide-react';
+import { Home, Package, Search, Settings, Menu, X, User, LogOut, Heart, Scale, Info, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -25,6 +25,8 @@ const navLinks = [
   { id: 'products', href: '/products', icon: Package, textKey: 'nav.products' },
   { id: 'compare', href: '/compare', icon: Scale, textKey: 'nav.compare' },
   { id: 'favorites', href: '/favorites', icon: Heart, textKey: 'nav.favorites' },
+  { id: 'about', href: '/about', icon: Info, textKey: 'nav.about' },
+  { id: 'contact', href: '/contact', icon: Mail, textKey: 'nav.contact' },
   { id: 'admin', href: '/admin', icon: Settings, textKey: 'nav.admin', auth: true },
 ];
 
@@ -46,10 +48,10 @@ export default function Navbar() {
               whileHover={{ scale: 1.1 }}
               className="flex items-center space-x-2"
             >
-              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center">
                 <Package className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
                 NexMotor
               </span>
             </motion.div>
@@ -107,7 +109,7 @@ export default function Navbar() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center space-x-2">
                     <Avatar className="h-8 w-8">
-                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-cyan-600 text-white">
                         {user?.username?.[0]?.toUpperCase() || 'U'}
                       </AvatarFallback>
                     </Avatar>

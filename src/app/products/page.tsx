@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, SlidersHorizontal, Package, Heart, Scale } from 'lucide-react';
+import { Search, SlidersHorizontal, Package, Heart, Scale, X, Check, Zap, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -136,40 +136,45 @@ export default function ProductsPage() {
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
-          className="mb-6 rounded-lg border bg-card p-6"
+          className="mb-6 rounded-lg border-2 border-primary/20 bg-gradient-to-br from-blue-50/50 to-cyan-50/50 dark:from-blue-950/20 dark:to-cyan-950/20 p-6"
         >
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <div>
-              <Label>{t('products.fields.power')}</Label>
+              <Label>{t('products.fields.power')} (kW)</Label>
               <div className="mt-2 flex gap-2">
                 <Input
                   type="number"
                   placeholder="Min"
                   value={filters.power_min || ''}
                   onChange={(e) => handleFilterChange('power_min', e.target.value ? Number(e.target.value) : undefined)}
+                  className="bg-background"
                 />
+                <span className="flex items-center text-muted-foreground">-</span>
                 <Input
                   type="number"
                   placeholder="Max"
                   value={filters.power_max || ''}
                   onChange={(e) => handleFilterChange('power_max', e.target.value ? Number(e.target.value) : undefined)}
+                  className="bg-background"
                 />
               </div>
             </div>
 
             <div>
-              <Label>{t('products.fields.voltage')}</Label>
+              <Label>{t('products.fields.voltage')} (V)</Label>
               <Select
                 value={filters.voltage?.toString() || ''}
                 onValueChange={(value) => handleFilterChange('voltage', value ? Number(value) : undefined)}
               >
-                <SelectTrigger className="mt-2">
+                <SelectTrigger className="mt-2 bg-background">
                   <SelectValue placeholder={t('common.all')} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="">{t('common.all')}</SelectItem>
                   <SelectItem value="380">380V</SelectItem>
                   <SelectItem value="220">220V</SelectItem>
+                  <SelectItem value="660">660V</SelectItem>
+                  <SelectItem value="690">690V</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -182,12 +187,36 @@ export default function ProductsPage() {
                   placeholder="Min"
                   value={filters.rpm_min || ''}
                   onChange={(e) => handleFilterChange('rpm_min', e.target.value ? Number(e.target.value) : undefined)}
+                  className="bg-background"
                 />
+                <span className="flex items-center text-muted-foreground">-</span>
                 <Input
                   type="number"
                   placeholder="Max"
                   value={filters.rpm_max || ''}
                   onChange={(e) => handleFilterChange('rpm_max', e.target.value ? Number(e.target.value) : undefined)}
+                  className="bg-background"
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label>{t('products.fields.efficiency')} (%)</Label>
+              <div className="mt-2 flex gap-2">
+                <Input
+                  type="number"
+                  placeholder="Min"
+                  value={filters.efficiency_min || ''}
+                  onChange={(e) => handleFilterChange('efficiency_min', e.target.value ? Number(e.target.value) : undefined)}
+                  className="bg-background"
+                />
+                <span className="flex items-center text-muted-foreground">-</span>
+                <Input
+                  type="number"
+                  placeholder="Max"
+                  value={filters.efficiency_max || ''}
+                  onChange={(e) => handleFilterChange('efficiency_max', e.target.value ? Number(e.target.value) : undefined)}
+                  className="bg-background"
                 />
               </div>
             </div>
@@ -198,7 +227,7 @@ export default function ProductsPage() {
                 placeholder="e.g., 90S"
                 value={filters.frameSize || ''}
                 onChange={(e) => handleFilterChange('frameSize', e.target.value)}
-                className="mt-2"
+                className="mt-2 bg-background"
               />
             </div>
 
@@ -208,30 +237,109 @@ export default function ProductsPage() {
                 value={filters.poles?.toString() || ''}
                 onValueChange={(value) => handleFilterChange('poles', value ? Number(value) : undefined)}
               >
-                <SelectTrigger className="mt-2">
+                <SelectTrigger className="mt-2 bg-background">
                   <SelectValue placeholder={t('common.all')} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="">{t('common.all')}</SelectItem>
-                  <SelectItem value="2">2</SelectItem>
-                  <SelectItem value="4">4</SelectItem>
-                  <SelectItem value="6">6</SelectItem>
-                  <SelectItem value="8">8</SelectItem>
+                  <SelectItem value="2">2极</SelectItem>
+                  <SelectItem value="4">4极</SelectItem>
+                  <SelectItem value="6">6极</SelectItem>
+                  <SelectItem value="8">8极</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>{t('products.fields.ip')}</Label>
+              <Select
+                value={filters.ip || ''}
+                onValueChange={(value) => handleFilterChange('ip', value || undefined)}
+              >
+                <SelectTrigger className="mt-2 bg-background">
+                  <SelectValue placeholder={t('common.all')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">{t('common.all')}</SelectItem>
+                  <SelectItem value="IP54">IP54</SelectItem>
+                  <SelectItem value="IP55">IP55</SelectItem>
+                  <SelectItem value="IP56">IP56</SelectItem>
+                  <SelectItem value="IP65">IP65</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>{t('products.fields.insulation')}</Label>
+              <Select
+                value={filters.insulation || ''}
+                onValueChange={(value) => handleFilterChange('insulation', value || undefined)}
+              >
+                <SelectTrigger className="mt-2 bg-background">
+                  <SelectValue placeholder={t('common.all')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">{t('common.all')}</SelectItem>
+                  <SelectItem value="B">B级</SelectItem>
+                  <SelectItem value="F">F级</SelectItem>
+                  <SelectItem value="H">H级</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
-          <div className="mt-6 flex justify-end gap-2">
-            <Button variant="outline" onClick={resetFilters}>
+          <div className="mt-6 flex flex-wrap gap-2 justify-end">
+            <Button variant="outline" onClick={resetFilters} className="gap-2">
+              <X className="h-4 w-4" />
               {t('products.reset')}
             </Button>
-            <Button onClick={() => setShowFilters(false)}>
+            <Button onClick={() => setShowFilters(false)} className="gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
+              <Check className="h-4 w-4" />
               {t('common.submit')}
             </Button>
           </div>
         </motion.div>
       )}
+
+      {/* Quick Filter Tags */}
+      <div className="mb-6 flex flex-wrap gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setFilters({ poles: 4 })}
+          className="gap-2 hover:border-primary"
+        >
+          <Zap className="h-3 w-3" />
+          4极电机
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setFilters({ voltage: 380 })}
+          className="gap-2 hover:border-primary"
+        >
+          <Zap className="h-3 w-3" />
+          380V
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setFilters({ frameSize: '90S' })}
+          className="gap-2 hover:border-primary"
+        >
+          <Zap className="h-3 w-3" />
+          90S机座
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setFilters({ efficiency_min: 90 })}
+          className="gap-2 hover:border-primary"
+        >
+          <Award className="h-3 w-3" />
+          高效率≥90%
+        </Button>
+      </div>
 
       {/* Products Grid */}
       {loading ? (

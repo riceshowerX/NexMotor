@@ -2,7 +2,15 @@
 export interface Favorite {
   id: number;
   motorId: number;
-  motor: any;
+  motor: {
+    id: number;
+    model: string;
+    power: number;
+    rpm: number;
+    voltage: number;
+    frameSize: string;
+    [key: string]: any;
+  };
   createdAt: string;
 }
 
@@ -18,7 +26,15 @@ export interface Category {
 export interface CompareItem {
   id: number;
   motorId: number;
-  motor: any;
+  motor: {
+    id: number;
+    model: string;
+    power: number;
+    rpm: number;
+    voltage: number;
+    frameSize: string;
+    [key: string]: any;
+  };
 }
 
 // 搜索历史
