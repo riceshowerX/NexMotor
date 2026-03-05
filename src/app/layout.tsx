@@ -5,6 +5,8 @@ import { Toaster } from '@/components/ui/sonner';
 import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
 import { LanguageProvider } from '@/context/LanguageContext';
+import { FavoritesProvider } from '@/context/FavoritesContext';
+import { CompareProvider } from '@/context/CompareContext';
 import Navbar from '@/components/layout/Navbar';
 import { initializeDatabase } from '@/lib/db';
 
@@ -35,11 +37,15 @@ export default function RootLayout({
         {isDev && <Inspector />}
         <LanguageProvider>
           <AuthProvider>
-            <div className="flex min-h-screen flex-col">
-              <Navbar />
-              <main className="flex-1">{children}</main>
-            </div>
-            <Toaster />
+            <FavoritesProvider>
+              <CompareProvider>
+                <div className="flex min-h-screen flex-col">
+                  <Navbar />
+                  <main className="flex-1">{children}</main>
+                </div>
+                <Toaster />
+              </CompareProvider>
+            </FavoritesProvider>
           </AuthProvider>
         </LanguageProvider>
       </body>

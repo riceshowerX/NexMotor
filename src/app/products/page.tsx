@@ -2,23 +2,29 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, SlidersHorizontal, Package } from 'lucide-react';
+import { Search, SlidersHorizontal, Package, Heart, Scale } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Slider } from '@/components/ui/slider';
+import { Pagination } from '@/components/ui/pagination';
 import { useTranslation } from '@/context/LanguageContext';
+import { useFavorites } from '@/context/FavoritesContext';
+import { useCompare } from '@/context/CompareContext';
 import type { Motor, MotorFilters } from '@/types/motor';
 import { motion } from 'framer-motion';
 
 export default function ProductsPage() {
   const { t } = useTranslation();
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const { addToCompare, isComparing } = useCompare();
   const [motors, setMotors] = useState<Motor[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<MotorFilters>({});
   const [showFilters, setShowFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
 
   useEffect(() => {
     fetchMotors();
@@ -38,6 +44,7 @@ export default function ProductsPage() {
       const data = await response.json();
       if (data.success) {
         setMotors(data.data || []);
+        setCurrentPage(1);
       }
     } catch (error) {
       console.error('Failed to fetch motors:', error);
@@ -52,6 +59,29 @@ export default function ProductsPage() {
 
   const resetFilters = () => {
     setFilters({});
+  };
+
+  const totalPages = Math.ceil(motors.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentMotors = motors.slice(startIndex, endIndex);
+
+  const handleFavorite = (motor: Motor, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isFavorite(motor.id)) {
+      removeFavorite(motor.id);
+    } else {
+      addFavorite(motor);
+    }
+  };
+
+  const handleCompare = (motor: Motor, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isComparing(motor.id)) {
+      // 已经在对比列表中，不做任何操作
+    } else {
+      addToCompare(motor);
+    }
   };
 
   return (
@@ -227,57 +257,108 @@ export default function ProductsPage() {
           <p className="mt-4 text-muted-foreground">{t('products.no_results')}</p>
         </div>
       ) : (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-        >
-          {motors.map((motor, index) => (
-            <motion.div
-              key={motor.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-            >
-              <Link href={`/products/${motor.id}`}>
-                <Card className="h-full transition-all hover:shadow-lg cursor-pointer">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Package className="h-5 w-5 text-primary" />
-                      {motor.model}
-                    </CardTitle>
-                    <CardDescription>{motor.frameSize} 机座号</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 gap-2 text-sm">
-                      <div>
-                        <span className="text-muted-foreground">{t('products.fields.power')}:</span>
-                        <span className="ml-1 font-medium">{motor.power} kW</span>
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {currentMotors.map((motor, index) => (
+              <motion.div
+                key={motor.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+              >
+                <Link href={`/products/${motor.id}`}>
+                  <Card className="h-full transition-all hover:shadow-lg cursor-pointer">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Package className="h-5 w-5 text-primary" />
+                        {motor.model}
+                      </CardTitle>
+                      <CardDescription>{motor.frameSize} 机座号</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div>
+                          <span className="text-muted-foreground">{t('products.fields.power')}:</span>
+                          <span className="ml-1 font-medium">{motor.power} kW</span>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">{t('products.fields.rpm')}:</span>
+                          <span className="ml-1 font-medium">{motor.rpm}</span>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">{t('products.fields.voltage')}:</span>
+                          <span className="ml-1 font-medium">{motor.voltage} V</span>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">{t('products.fields.efficiency')}:</span>
+                          <span className="ml-1 font-medium">{motor.efficiency}%</span>
+                        </div>
                       </div>
-                      <div>
-                        <span className="text-muted-foreground">{t('products.fields.rpm')}:</span>
-                        <span className="ml-1 font-medium">{motor.rpm}</span>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">{t('products.fields.voltage')}:</span>
-                        <span className="ml-1 font-medium">{motor.voltage} V</span>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">{t('products.fields.efficiency')}:</span>
-                        <span className="ml-1 font-medium">{motor.efficiency}%</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <Button variant="outline" className="w-full">
-                      {t('detail.title')}
+                    </CardContent>
+                    <CardFooter className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        onClick={(e) => handleFavorite(motor, e)}
+                      >
+                        <Heart className={`h-4 w-4 mr-1 ${isFavorite(motor.id) ? 'fill-current text-red-500' : ''}`} />
+                        {isFavorite(motor.id) ? '已收藏' : '收藏'}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        onClick={(e) => handleCompare(motor, e)}
+                      >
+                        <Scale className={`h-4 w-4 mr-1 ${isComparing(motor.id) ? 'text-blue-500' : ''}`} />
+                        {isComparing(motor.id) ? '已添加' : '对比'}
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-8 flex justify-center">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                >
+                  上一页
+                </Button>
+                <div className="flex gap-1">
+                  {[...Array(totalPages)].map((_, i) => (
+                    <Button
+                      key={i + 1}
+                      variant={currentPage === i + 1 ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setCurrentPage(i + 1)}
+                    >
+                      {i + 1}
                     </Button>
-                  </CardFooter>
-                </Card>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
+                  ))}
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  下一页
+                </Button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

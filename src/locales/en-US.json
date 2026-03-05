@@ -3,6 +3,8 @@
     "home": "Home",
     "products": "Products",
     "quick_select": "Quick Select",
+    "compare": "Compare",
+    "favorites": "Favorites",
     "admin": "Admin"
   },
   "home": {
@@ -124,6 +126,39 @@
     "success": "Success",
     "error": "Error",
     "required": "This field is required",
-    "all": "All"
+    "all": "All",
+    "add_to_compare": "Add to Compare",
+    "remove_from_compare": "Remove from Compare",
+    "add_to_favorites": "Add to Favorites",
+    "remove_from_favorites": "Remove from Favorites",
+    "compare": "Compare",
+    "clear": "Clear",
+    "export": "Export",
+    "print": "Print",
+    "share": "Share"
+  },
+  "compare": {
+    "title": "Product Comparison",
+    "empty": "Please select products to compare",
+    "add_more": "Add More Products",
+    "clear_all": "Clear All",
+    "max_items": "Maximum 4 products can be compared",
+    "add_success": "Added to comparison list",
+    "already_added": "This product is already in the comparison list"
+  },
+  "favorites": {
+    "title": "Favorites",
+    "empty": "No favorites yet",
+    "add_success": "Added to favorites",
+    "remove_success": "Removed from favorites",
+    "clear_all": "Clear All Favorites"
+  },
+  "stats": {
+    "title": "Statistics",
+    "total_products": "Total Products",
+    "total_views": "Total Views",
+    "by_frame_size": "By Frame Size",
+    "by_power": "By Power",
+    "recent_added": "Recently Added"
   }
 }

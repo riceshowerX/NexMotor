@@ -3,6 +3,8 @@
     "home": "首页",
     "products": "产品中心",
     "quick_select": "快速选型",
+    "compare": "产品对比",
+    "favorites": "收藏夹",
     "admin": "管理后台"
   },
   "home": {
@@ -124,6 +126,39 @@
     "success": "操作成功",
     "error": "操作失败",
     "required": "此项必填",
-    "all": "全部"
+    "all": "全部",
+    "add_to_compare": "加入对比",
+    "remove_from_compare": "移除对比",
+    "add_to_favorites": "收藏",
+    "remove_from_favorites": "取消收藏",
+    "compare": "对比",
+    "clear": "清空",
+    "export": "导出",
+    "print": "打印",
+    "share": "分享"
+  },
+  "compare": {
+    "title": "产品对比",
+    "empty": "请选择产品进行对比",
+    "add_more": "添加更多产品",
+    "clear_all": "清空对比列表",
+    "max_items": "最多只能对比 4 个产品",
+    "add_success": "已添加到对比列表",
+    "already_added": "该产品已在对比列表中"
+  },
+  "favorites": {
+    "title": "收藏夹",
+    "empty": "还没有收藏任何产品",
+    "add_success": "已添加到收藏夹",
+    "remove_success": "已从收藏夹移除",
+    "clear_all": "清空收藏夹"
+  },
+  "stats": {
+    "title": "数据统计",
+    "total_products": "产品总数",
+    "total_views": "总浏览量",
+    "by_frame_size": "按机座号分布",
+    "by_power": "按功率分布",
+    "recent_added": "最近添加"
   }
 }

@@ -20,6 +20,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useTranslation } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
+import { useFavorites } from '@/context/FavoritesContext';
+import { useCompare } from '@/context/CompareContext';
 import type { Motor } from '@/types/motor';
 import Motor3DViewer from '@/components/3d/Motor3DViewer';
 import { toast } from 'sonner';
@@ -29,6 +31,8 @@ export default function ProductDetailPage() {
   const router = useRouter();
   const { t } = useTranslation();
   const { isAuthenticated } = useAuth();
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const { addToCompare, isComparing } = useCompare();
   const [motor, setMotor] = useState<Motor | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -131,9 +135,23 @@ export default function ProductDetailPage() {
             <p className="text-muted-foreground">{motor.frameSize} 机座号</p>
           </div>
         </div>
-        {isAuthenticated && (
-          <div className="flex gap-2">
-            <Link href={`/admin/edit/${motor.id}`}>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => isFavorite(motor.id) ? removeFavorite(motor.id) : addFavorite(motor)}
+          >
+            {isFavorite(motor.id) ? '已收藏' : '收藏'}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => addToCompare(motor)}
+            disabled={isComparing(motor.id)}
+          >
+            {isComparing(motor.id) ? '已添加到对比' : '加入对比'}
+          </Button>
+          {isAuthenticated && (
+            <>
+              <Link href={`/admin/edit/${motor.id}`}>
               <Button variant="outline" size="sm" className="gap-2">
                 <Edit className="h-4 w-4" />
                 {t('detail.actions.edit')}
@@ -161,8 +179,9 @@ export default function ProductDetailPage() {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-          </div>
-        )}
+            </>
+          )}
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">

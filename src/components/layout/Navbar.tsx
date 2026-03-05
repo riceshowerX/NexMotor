@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Package, Search, Settings, Menu, X, User, LogOut } from 'lucide-react';
+import { Home, Package, Search, Settings, Menu, X, User, LogOut, Heart, Scale } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -14,12 +15,16 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/LanguageContext';
+import { useFavorites } from '@/context/FavoritesContext';
+import { useCompare } from '@/context/CompareContext';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const navLinks = [
   { id: 'home', href: '/', icon: Home, textKey: 'nav.home' },
   { id: 'products', href: '/products', icon: Package, textKey: 'nav.products' },
+  { id: 'compare', href: '/compare', icon: Scale, textKey: 'nav.compare' },
+  { id: 'favorites', href: '/favorites', icon: Heart, textKey: 'nav.favorites' },
   { id: 'admin', href: '/admin', icon: Settings, textKey: 'nav.admin', auth: true },
 ];
 
@@ -27,6 +32,8 @@ export default function Navbar() {
   const pathname = usePathname();
   const { user, isAuthenticated, logout } = useAuth();
   const { t, locale, setLocale } = useTranslation();
+  const { favorites } = useFavorites();
+  const { compareList } = useCompare();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -55,16 +62,21 @@ export default function Navbar() {
               .map(link => {
                 const Icon = link.icon;
                 const isActive = pathname === link.href;
+                const count = link.id === 'favorites' ? favorites.length :
+                             link.id === 'compare' ? compareList.length : 0;
                 return (
                   <Link
                     key={link.id}
                     href={link.href}
-                    className={`flex items-center space-x-2 text-sm font-medium transition-colors hover:text-primary ${
-                      isActive ? 'text-primary' : 'text-muted-foreground'
-                    }`}
+                    className="flex items-center space-x-2 text-sm font-medium transition-colors hover:text-primary relative"
                   >
-                    <Icon className="h-4 w-4" />
-                    <span>{t(link.textKey)}</span>
+                    <Icon className={`h-4 w-4 ${isActive ? 'text-primary' : ''}`} />
+                    <span className={isActive ? 'text-primary' : ''}>{t(link.textKey)}</span>
+                    {count > 0 && (
+                      <Badge variant="secondary" className="ml-1 h-5 min-w-[20px] px-1 text-xs">
+                        {count}
+                      </Badge>
+                    )}
                   </Link>
                 );
               })}
@@ -151,19 +163,22 @@ export default function Navbar() {
                   .map(link => {
                     const Icon = link.icon;
                     const isActive = pathname === link.href;
+                    const count = link.id === 'favorites' ? favorites.length :
+                                 link.id === 'compare' ? compareList.length : 0;
                     return (
                       <Link
                         key={link.id}
                         href={link.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-                          isActive
-                            ? 'bg-primary/10 text-primary'
-                            : 'text-muted-foreground hover:bg-muted'
-                        }`}
+                        className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors relative"
                       >
                         <Icon className="h-4 w-4" />
                         <span>{t(link.textKey)}</span>
+                        {count > 0 && (
+                          <Badge variant="secondary" className="ml-auto h-5 min-w-[20px] px-1 text-xs">
+                            {count}
+                          </Badge>
+                        )}
                       </Link>
                     );
                   })}
