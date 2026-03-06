@@ -138,16 +138,17 @@ export default function HomePage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
             >
-              <Link href="/products">
-                <Button size="lg" className="gap-2">
-                  {t('home.cta.explore')}
+              <Link href="/selection">
+                <Button size="lg" className="gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600">
+                  <Filter className="h-4 w-4" />
+                  开始选型
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
               <Link href="/products">
                 <Button size="lg" variant="outline" className="gap-2">
-                  <Search className="h-4 w-4" />
-                  {t('home.cta.quick_select')}
+                  <Package className="h-4 w-4" />
+                  浏览产品
                 </Button>
               </Link>
             </motion.div>
