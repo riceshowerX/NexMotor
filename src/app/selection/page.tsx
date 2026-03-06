@@ -88,7 +88,6 @@ const MOUNTING_OPTIONS = [
 ];
 
 const APPLICATION_OPTIONS = [
-  { label: '请选择应用场景', value: '' },
   { label: '水泵', value: 'pump' },
   { label: '风机', value: 'fan' },
   { label: '压缩机', value: 'compressor' },
@@ -303,7 +302,7 @@ export default function SelectionPage() {
                         onValueChange={(value) => setCriteria(prev => ({ ...prev, application: value }))}
                       >
                         <SelectTrigger>
-                          <SelectValue />
+                          <SelectValue placeholder="请选择应用场景" />
                         </SelectTrigger>
                         <SelectContent>
                           {APPLICATION_OPTIONS.map(opt => (
