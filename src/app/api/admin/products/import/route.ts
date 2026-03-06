@@ -40,7 +40,23 @@ export async function POST(request: NextRequest) {
     }
 
     const token = authHeader.replace('Bearer ', '');
-    // TODO: 验证JWT token
+
+    // 验证JWT token
+    const { verifyToken } = await import('@/lib/jwt');
+    try {
+      const decoded = verifyToken(token) as any;
+      if (!decoded || decoded.role !== 'admin') {
+        return NextResponse.json(
+          { success: false, error: '权限不足' },
+          { status: 403 }
+        );
+      }
+    } catch (error) {
+      return NextResponse.json(
+        { success: false, error: '无效的认证token' },
+        { status: 401 }
+      );
+    }
 
     // 获取上传的文件
     const formData = await request.formData();
