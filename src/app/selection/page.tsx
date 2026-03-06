@@ -2,12 +2,11 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Sliders, Search, X, Zap, RotateCw, Shield, Package, ArrowRight, Plus, Minus, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Sliders, Search, X, Zap, RotateCw, Shield, Package, ArrowRight, RefreshCw, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
@@ -16,16 +15,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface SelectionCriteria {
   powerMin: string;
   powerMax: string;
-  voltage: string[];
-  frequency: string[];
-  poles: string[];
-  ipRating: string[];
-  insulation: string[];
-  mounting: string[];
+  voltage: string;
+  frequency: string;
+  poles: string;
+  ipRating: string;
+  insulation: string;
+  mounting: string;
   rpmMin: string;
   rpmMax: string;
-  customVoltage: string;
-  customFrequency: string;
+  currentMin: string;
+  currentMax: string;
+  efficiencyMin: string;
+  efficiencyMax: string;
+  powerFactorMin: string;
+  powerFactorMax: string;
 }
 
 interface Motor {
@@ -48,64 +51,32 @@ interface Motor {
   imageUrl: string | null;
 }
 
-const VOLTAGE_OPTIONS = [
-  { label: '220V', value: '220' },
-  { label: '380V', value: '380' },
-  { label: '440V', value: '440' },
-  { label: '660V', value: '660' },
-  { label: '自定义...', value: 'custom' },
-];
+const POLES_OPTIONS = ['2', '4', '6', '8'];
 
-const FREQUENCY_OPTIONS = [
-  { label: '50Hz', value: '50' },
-  { label: '60Hz', value: '60' },
-  { label: '自定义...', value: 'custom' },
-];
+const IP_RATING_OPTIONS = ['IP23', 'IP44', 'IP54', 'IP55', 'IP56', 'IP65'];
 
-const POLES_OPTIONS = [
-  { label: '2极 (约3000rpm)', value: '2' },
-  { label: '4极 (约1500rpm)', value: '4' },
-  { label: '6极 (约1000rpm)', value: '6' },
-  { label: '8极 (约750rpm)', value: '8' },
-];
+const INSULATION_OPTIONS = ['B', 'F', 'H'];
 
-const IP_RATING_OPTIONS = [
-  { label: 'IP23', value: 'IP23' },
-  { label: 'IP44', value: 'IP44' },
-  { label: 'IP54', value: 'IP54' },
-  { label: 'IP55', value: 'IP55' },
-  { label: 'IP56', value: 'IP56' },
-  { label: 'IP65', value: 'IP65' },
-];
-
-const INSULATION_OPTIONS = [
-  { label: 'B级', value: 'B' },
-  { label: 'F级', value: 'F' },
-  { label: 'H级', value: 'H' },
-];
-
-const MOUNTING_OPTIONS = [
-  { label: 'B3 (底脚安装)', value: 'B3' },
-  { label: 'B5 (法兰安装)', value: 'B5' },
-  { label: 'B14 (小法兰安装)', value: 'B14' },
-  { label: 'B35 (底脚+法兰)', value: 'B35' },
-  { label: 'V1 (法兰向下)', value: 'V1' },
-];
+const MOUNTING_OPTIONS = ['B3', 'B5', 'B14', 'B35', 'V1'];
 
 export default function SelectionPage() {
   const [criteria, setCriteria] = useState<SelectionCriteria>({
     powerMin: '',
     powerMax: '',
-    voltage: [],
-    frequency: [],
-    poles: [],
-    ipRating: [],
-    insulation: [],
-    mounting: [],
+    voltage: '',
+    frequency: '',
+    poles: '',
+    ipRating: '',
+    insulation: '',
+    mounting: '',
     rpmMin: '',
     rpmMax: '',
-    customVoltage: '',
-    customFrequency: '',
+    currentMin: '',
+    currentMax: '',
+    efficiencyMin: '',
+    efficiencyMax: '',
+    powerFactorMin: '',
+    powerFactorMax: '',
   });
 
   const [motors, setMotors] = useState<Motor[]>([]);
@@ -152,42 +123,32 @@ export default function SelectionPage() {
       }
 
       // 电压筛选
-      if (criteria.voltage.length > 0) {
-        const voltages = criteria.voltage.includes('custom')
-          ? [...criteria.voltage.filter(v => v !== 'custom'), criteria.customVoltage].filter(Boolean)
-          : criteria.voltage;
-        if (!voltages.includes(motor.voltage.toString())) {
-          return false;
-        }
+      if (criteria.voltage && motor.voltage !== parseFloat(criteria.voltage)) {
+        return false;
       }
 
       // 频率筛选
-      if (criteria.frequency.length > 0) {
-        const frequencies = criteria.frequency.includes('custom')
-          ? [...criteria.frequency.filter(f => f !== 'custom'), criteria.customFrequency].filter(Boolean)
-          : criteria.frequency;
-        if (!frequencies.includes(motor.frequency.toString())) {
-          return false;
-        }
+      if (criteria.frequency && motor.frequency !== parseFloat(criteria.frequency)) {
+        return false;
       }
 
       // 极数筛选
-      if (criteria.poles.length > 0 && !criteria.poles.includes(motor.poles.toString())) {
+      if (criteria.poles && motor.poles !== parseInt(criteria.poles)) {
         return false;
       }
 
       // 防护等级筛选
-      if (criteria.ipRating.length > 0 && !criteria.ipRating.includes(motor.ip)) {
+      if (criteria.ipRating && motor.ip !== criteria.ipRating) {
         return false;
       }
 
       // 绝缘等级筛选
-      if (criteria.insulation.length > 0 && !criteria.insulation.includes(motor.insulation)) {
+      if (criteria.insulation && motor.insulation !== criteria.insulation) {
         return false;
       }
 
       // 安装方式筛选
-      if (criteria.mounting.length > 0 && !criteria.mounting.includes(motor.mounting)) {
+      if (criteria.mounting && motor.mounting !== criteria.mounting) {
         return false;
       }
 
@@ -199,21 +160,35 @@ export default function SelectionPage() {
         return false;
       }
 
+      // 电流范围筛选
+      if (criteria.currentMin && motor.current < parseFloat(criteria.currentMin)) {
+        return false;
+      }
+      if (criteria.currentMax && motor.current > parseFloat(criteria.currentMax)) {
+        return false;
+      }
+
+      // 效率范围筛选
+      if (criteria.efficiencyMin && motor.efficiency < parseFloat(criteria.efficiencyMin)) {
+        return false;
+      }
+      if (criteria.efficiencyMax && motor.efficiency > parseFloat(criteria.efficiencyMax)) {
+        return false;
+      }
+
+      // 功率因数范围筛选
+      if (criteria.powerFactorMin && motor.powerFactor < parseFloat(criteria.powerFactorMin)) {
+        return false;
+      }
+      if (criteria.powerFactorMax && motor.powerFactor > parseFloat(criteria.powerFactorMax)) {
+        return false;
+      }
+
       return true;
     });
 
     setFilteredMotors(filtered);
   }, [criteria, motors]);
-
-  const handleCheckboxChange = (field: keyof SelectionCriteria, value: string) => {
-    setCriteria(prev => {
-      const currentArray = prev[field] as string[];
-      const newArray = currentArray.includes(value)
-        ? currentArray.filter(item => item !== value)
-        : [...currentArray, value];
-      return { ...prev, [field]: newArray };
-    });
-  };
 
   const handleInputChange = (field: keyof SelectionCriteria, value: string) => {
     setCriteria(prev => ({ ...prev, [field]: value }));
@@ -223,51 +198,44 @@ export default function SelectionPage() {
     setCriteria({
       powerMin: '',
       powerMax: '',
-      voltage: [],
-      frequency: [],
-      poles: [],
-      ipRating: [],
-      insulation: [],
-      mounting: [],
+      voltage: '',
+      frequency: '',
+      poles: '',
+      ipRating: '',
+      insulation: '',
+      mounting: '',
       rpmMin: '',
       rpmMax: '',
-      customVoltage: '',
-      customFrequency: '',
+      currentMin: '',
+      currentMax: '',
+      efficiencyMin: '',
+      efficiencyMax: '',
+      powerFactorMin: '',
+      powerFactorMax: '',
     });
   };
 
   const hasActiveFilters = () => {
-    return (
-      criteria.powerMin !== '' ||
-      criteria.powerMax !== '' ||
-      criteria.voltage.length > 0 ||
-      criteria.frequency.length > 0 ||
-      criteria.poles.length > 0 ||
-      criteria.ipRating.length > 0 ||
-      criteria.insulation.length > 0 ||
-      criteria.mounting.length > 0 ||
-      criteria.rpmMin !== '' ||
-      criteria.rpmMax !== ''
-    );
-  };
-
-  const handleQuickSelect = (power: number, rpm: number, voltage: number) => {
-    setCriteria(prev => ({
-      ...prev,
-      powerMin: (power - 0.5).toString(),
-      powerMax: (power + 0.5).toString(),
-      rpmMin: (rpm - 200).toString(),
-      rpmMax: (rpm + 200).toString(),
-      voltage: [voltage.toString()],
-    }));
+    return Object.values(criteria).some(value => value !== '');
   };
 
   const popularRequirements = [
-    { name: '小功率水泵', power: 1.5, rpm: 2840, voltage: 380 },
-    { name: '中型风机', power: 7.5, rpm: 1450, voltage: 380 },
-    { name: '大型压缩机', power: 45, rpm: 1480, voltage: 380 },
-    { name: '低速传动', power: 15, rpm: 730, voltage: 380 },
+    { name: '小功率水泵', power: '1.5', rpm: '2840', voltage: '380' },
+    { name: '中型风机', power: '7.5', rpm: '1450', voltage: '380' },
+    { name: '大型压缩机', power: '45', rpm: '1480', voltage: '380' },
+    { name: '低速传动', power: '15', rpm: '730', voltage: '380' },
   ];
+
+  const handleQuickSelect = (req: typeof popularRequirements[0]) => {
+    setCriteria(prev => ({
+      ...prev,
+      powerMin: (parseFloat(req.power) - 0.5).toString(),
+      powerMax: (parseFloat(req.power) + 0.5).toString(),
+      rpmMin: (parseInt(req.rpm) - 200).toString(),
+      rpmMax: (parseInt(req.rpm) + 200).toString(),
+      voltage: req.voltage,
+    }));
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
@@ -329,15 +297,18 @@ export default function SelectionPage() {
                       输入精确参数进行筛选
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto">
-                    {/* Power Range */}
-                    <div className="space-y-3">
-                      <Label className="flex items-center gap-2">
-                        <Zap className="h-4 w-4" />
-                        功率范围 (kW)
-                      </Label>
-                      <div className="flex gap-2 items-center">
-                        <div className="flex-1">
+                  <CardContent className="space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto pb-20">
+                    {/* Basic Parameters */}
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-sm text-muted-foreground">基本参数</h3>
+
+                      {/* Power Range */}
+                      <div className="space-y-2">
+                        <Label className="flex items-center gap-2 text-sm">
+                          <Zap className="h-4 w-4" />
+                          功率范围 (kW)
+                        </Label>
+                        <div className="flex gap-2 items-center">
                           <Input
                             type="number"
                             placeholder="最小"
@@ -346,9 +317,7 @@ export default function SelectionPage() {
                             min="0"
                             step="0.1"
                           />
-                        </div>
-                        <span className="text-muted-foreground">-</span>
-                        <div className="flex-1">
+                          <span className="text-muted-foreground text-xs">-</span>
                           <Input
                             type="number"
                             placeholder="最大"
@@ -359,16 +328,14 @@ export default function SelectionPage() {
                           />
                         </div>
                       </div>
-                    </div>
 
-                    {/* RPM Range */}
-                    <div className="space-y-3">
-                      <Label className="flex items-center gap-2">
-                        <RotateCw className="h-4 w-4" />
-                        转速范围 (rpm)
-                      </Label>
-                      <div className="flex gap-2 items-center">
-                        <div className="flex-1">
+                      {/* RPM Range */}
+                      <div className="space-y-2">
+                        <Label className="flex items-center gap-2 text-sm">
+                          <RotateCw className="h-4 w-4" />
+                          转速范围 (rpm)
+                        </Label>
+                        <div className="flex gap-2 items-center">
                           <Input
                             type="number"
                             placeholder="最小"
@@ -377,9 +344,7 @@ export default function SelectionPage() {
                             min="0"
                             step="100"
                           />
-                        </div>
-                        <span className="text-muted-foreground">-</span>
-                        <div className="flex-1">
+                          <span className="text-muted-foreground text-xs">-</span>
                           <Input
                             type="number"
                             placeholder="最大"
@@ -390,207 +355,221 @@ export default function SelectionPage() {
                           />
                         </div>
                       </div>
+
+                      {/* Current Range */}
+                      <div className="space-y-2">
+                        <Label className="flex items-center gap-2 text-sm">
+                          <Zap className="h-4 w-4" />
+                          电流范围 (A)
+                        </Label>
+                        <div className="flex gap-2 items-center">
+                          <Input
+                            type="number"
+                            placeholder="最小"
+                            value={criteria.currentMin}
+                            onChange={(e) => handleInputChange('currentMin', e.target.value)}
+                            min="0"
+                            step="0.1"
+                          />
+                          <span className="text-muted-foreground text-xs">-</span>
+                          <Input
+                            type="number"
+                            placeholder="最大"
+                            value={criteria.currentMax}
+                            onChange={(e) => handleInputChange('currentMax', e.target.value)}
+                            min="0"
+                            step="0.1"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Voltage */}
+                      <div className="space-y-2">
+                        <Label className="text-sm">电压 (V)</Label>
+                        <Input
+                          type="number"
+                          placeholder="例如：380"
+                          value={criteria.voltage}
+                          onChange={(e) => handleInputChange('voltage', e.target.value)}
+                          min="0"
+                        />
+                      </div>
+
+                      {/* Frequency */}
+                      <div className="space-y-2">
+                        <Label className="text-sm">频率 (Hz)</Label>
+                        <Input
+                          type="number"
+                          placeholder="例如：50"
+                          value={criteria.frequency}
+                          onChange={(e) => handleInputChange('frequency', e.target.value)}
+                          min="0"
+                        />
+                      </div>
                     </div>
 
                     <Separator />
 
-                    {/* Voltage */}
-                    <div className="space-y-3">
-                      <Label className="flex items-center gap-2">
-                        <Zap className="h-4 w-4" />
-                        电压等级 (V)
-                      </Label>
-                      <div className="grid grid-cols-2 gap-2">
-                        {VOLTAGE_OPTIONS.map(opt => {
-                          if (opt.value === 'custom') {
-                            return (
-                              <div key={opt.value} className="col-span-2 space-y-2">
-                                <div className="flex items-center space-x-2">
-                                  <Checkbox
-                                    id="voltage-custom"
-                                    checked={criteria.voltage.includes('custom')}
-                                    onCheckedChange={() => handleCheckboxChange('voltage', 'custom')}
-                                  />
-                                  <Label
-                                    htmlFor="voltage-custom"
-                                    className="text-sm font-normal cursor-pointer flex-1"
-                                  >
-                                    自定义电压
-                                  </Label>
-                                </div>
-                                {criteria.voltage.includes('custom') && (
-                                  <Input
-                                    type="number"
-                                    placeholder="输入电压值"
-                                    value={criteria.customVoltage}
-                                    onChange={(e) => handleInputChange('customVoltage', e.target.value)}
-                                    min="0"
-                                    className="ml-6"
-                                  />
-                                )}
-                              </div>
-                            );
-                          }
-                          return (
-                            <div key={opt.value} className="flex items-center space-x-2">
-                              <Checkbox
-                                id={`voltage-${opt.value}`}
-                                checked={criteria.voltage.includes(opt.value)}
-                                onCheckedChange={() => handleCheckboxChange('voltage', opt.value)}
-                              />
-                              <Label
-                                htmlFor={`voltage-${opt.value}`}
-                                className="text-sm font-normal cursor-pointer"
-                              >
-                                {opt.label}
-                              </Label>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
+                    {/* Performance Parameters */}
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-sm text-muted-foreground">性能参数</h3>
 
-                    {/* Frequency */}
-                    <div className="space-y-3">
-                      <Label>频率 (Hz)</Label>
-                      <div className="grid grid-cols-2 gap-2">
-                        {FREQUENCY_OPTIONS.map(opt => {
-                          if (opt.value === 'custom') {
-                            return (
-                              <div key={opt.value} className="col-span-2 space-y-2">
-                                <div className="flex items-center space-x-2">
-                                  <Checkbox
-                                    id="frequency-custom"
-                                    checked={criteria.frequency.includes('custom')}
-                                    onCheckedChange={() => handleCheckboxChange('frequency', 'custom')}
-                                  />
-                                  <Label
-                                    htmlFor="frequency-custom"
-                                    className="text-sm font-normal cursor-pointer flex-1"
-                                  >
-                                    自定义频率
-                                  </Label>
-                                </div>
-                                {criteria.frequency.includes('custom') && (
-                                  <Input
-                                    type="number"
-                                    placeholder="输入频率值"
-                                    value={criteria.customFrequency}
-                                    onChange={(e) => handleInputChange('customFrequency', e.target.value)}
-                                    min="0"
-                                    className="ml-6"
-                                  />
-                                )}
-                              </div>
-                            );
-                          }
-                          return (
-                            <div key={opt.value} className="flex items-center space-x-2">
-                              <Checkbox
-                                id={`freq-${opt.value}`}
-                                checked={criteria.frequency.includes(opt.value)}
-                                onCheckedChange={() => handleCheckboxChange('frequency', opt.value)}
-                              />
-                              <Label
-                                htmlFor={`freq-${opt.value}`}
-                                className="text-sm font-normal cursor-pointer"
-                              >
-                                {opt.label}
-                              </Label>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Poles */}
-                    <div className="space-y-3">
-                      <Label>极数</Label>
+                      {/* Efficiency Range */}
                       <div className="space-y-2">
-                        {POLES_OPTIONS.map(opt => (
-                          <div key={opt.value} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`poles-${opt.value}`}
-                              checked={criteria.poles.includes(opt.value)}
-                              onCheckedChange={() => handleCheckboxChange('poles', opt.value)}
-                            />
-                            <Label
-                              htmlFor={`poles-${opt.value}`}
-                              className="text-sm font-normal cursor-pointer"
-                            >
-                              {opt.label}
-                            </Label>
-                          </div>
-                        ))}
+                        <Label className="text-sm">效率范围 (%)</Label>
+                        <div className="flex gap-2 items-center">
+                          <Input
+                            type="number"
+                            placeholder="最小"
+                            value={criteria.efficiencyMin}
+                            onChange={(e) => handleInputChange('efficiencyMin', e.target.value)}
+                            min="0"
+                            max="100"
+                            step="0.1"
+                          />
+                          <span className="text-muted-foreground text-xs">-</span>
+                          <Input
+                            type="number"
+                            placeholder="最大"
+                            value={criteria.efficiencyMax}
+                            onChange={(e) => handleInputChange('efficiencyMax', e.target.value)}
+                            min="0"
+                            max="100"
+                            step="0.1"
+                          />
+                        </div>
                       </div>
-                    </div>
 
-                    {/* IP Rating */}
-                    <div className="space-y-3">
-                      <Label className="flex items-center gap-2">
-                        <Shield className="h-4 w-4" />
-                        防护等级
-                      </Label>
-                      <div className="grid grid-cols-3 gap-2">
-                        {IP_RATING_OPTIONS.map(opt => (
-                          <div key={opt.value} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`ip-${opt.value}`}
-                              checked={criteria.ipRating.includes(opt.value)}
-                              onCheckedChange={() => handleCheckboxChange('ipRating', opt.value)}
-                            />
-                            <Label
-                              htmlFor={`ip-${opt.value}`}
-                              className="text-sm font-normal cursor-pointer"
-                            >
-                              {opt.label}
-                            </Label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Insulation */}
-                    <div className="space-y-3">
-                      <Label>绝缘等级</Label>
-                      <div className="grid grid-cols-3 gap-2">
-                        {INSULATION_OPTIONS.map(opt => (
-                          <div key={opt.value} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`insulation-${opt.value}`}
-                              checked={criteria.insulation.includes(opt.value)}
-                              onCheckedChange={() => handleCheckboxChange('insulation', opt.value)}
-                            />
-                            <Label
-                              htmlFor={`insulation-${opt.value}`}
-                              className="text-sm font-normal cursor-pointer"
-                            >
-                              {opt.label}
-                            </Label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Mounting */}
-                    <div className="space-y-3">
-                      <Label>安装方式</Label>
+                      {/* Power Factor Range */}
                       <div className="space-y-2">
-                        {MOUNTING_OPTIONS.map(opt => (
-                          <div key={opt.value} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`mounting-${opt.value}`}
-                              checked={criteria.mounting.includes(opt.value)}
-                              onCheckedChange={() => handleCheckboxChange('mounting', opt.value)}
-                            />
-                            <Label
-                              htmlFor={`mounting-${opt.value}`}
-                              className="text-sm font-normal cursor-pointer"
+                        <Label className="text-sm">功率因数范围</Label>
+                        <div className="flex gap-2 items-center">
+                          <Input
+                            type="number"
+                            placeholder="最小"
+                            value={criteria.powerFactorMin}
+                            onChange={(e) => handleInputChange('powerFactorMin', e.target.value)}
+                            min="0"
+                            max="1"
+                            step="0.01"
+                          />
+                          <span className="text-muted-foreground text-xs">-</span>
+                          <Input
+                            type="number"
+                            placeholder="最大"
+                            value={criteria.powerFactorMax}
+                            onChange={(e) => handleInputChange('powerFactorMax', e.target.value)}
+                            min="0"
+                            max="1"
+                            step="0.01"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <Separator />
+
+                    {/* Mechanical Parameters */}
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-sm text-muted-foreground">机械参数</h3>
+
+                      {/* Poles */}
+                      <div className="space-y-2">
+                        <Label className="text-sm">极数</Label>
+                        <Input
+                          type="number"
+                          placeholder="例如：4"
+                          value={criteria.poles}
+                          onChange={(e) => handleInputChange('poles', e.target.value)}
+                          min="1"
+                          max="12"
+                        />
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {POLES_OPTIONS.map(pole => (
+                            <Button
+                              key={pole}
+                              variant={criteria.poles === pole ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => handleInputChange('poles', pole)}
+                              className="h-7 text-xs"
                             >
-                              {opt.label}
-                            </Label>
-                          </div>
-                        ))}
+                              {pole}极
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* IP Rating */}
+                      <div className="space-y-2">
+                        <Label className="flex items-center gap-2 text-sm">
+                          <Shield className="h-4 w-4" />
+                          防护等级
+                        </Label>
+                        <Input
+                          placeholder="例如：IP54"
+                          value={criteria.ipRating}
+                          onChange={(e) => handleInputChange('ipRating', e.target.value.toUpperCase())}
+                        />
+                        <div className="grid grid-cols-3 gap-1 mt-2">
+                          {IP_RATING_OPTIONS.map(ip => (
+                            <Button
+                              key={ip}
+                              variant={criteria.ipRating === ip ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => handleInputChange('ipRating', ip)}
+                              className="h-7 text-xs"
+                            >
+                              {ip}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Insulation */}
+                      <div className="space-y-2">
+                        <Label className="text-sm">绝缘等级</Label>
+                        <Input
+                          placeholder="例如：F"
+                          value={criteria.insulation}
+                          onChange={(e) => handleInputChange('insulation', e.target.value.toUpperCase())}
+                          maxLength={1}
+                        />
+                        <div className="flex gap-2 mt-2">
+                          {INSULATION_OPTIONS.map(ins => (
+                            <Button
+                              key={ins}
+                              variant={criteria.insulation === ins ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => handleInputChange('insulation', ins)}
+                              className="h-7 text-xs flex-1"
+                            >
+                              {ins}级
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Mounting */}
+                      <div className="space-y-2">
+                        <Label className="text-sm">安装方式</Label>
+                        <Input
+                          placeholder="例如：B3"
+                          value={criteria.mounting}
+                          onChange={(e) => handleInputChange('mounting', e.target.value.toUpperCase())}
+                        />
+                        <div className="grid grid-cols-3 gap-1 mt-2">
+                          {MOUNTING_OPTIONS.map(mount => (
+                            <Button
+                              key={mount}
+                              variant={criteria.mounting === mount ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => handleInputChange('mounting', mount)}
+                              className="h-7 text-xs"
+                            >
+                              {mount}
+                            </Button>
+                          ))}
+                        </div>
                       </div>
                     </div>
 
@@ -624,7 +603,7 @@ export default function SelectionPage() {
                       <Button
                         key={index}
                         variant="outline"
-                        onClick={() => handleQuickSelect(req.power, req.rpm, req.voltage)}
+                        onClick={() => handleQuickSelect(req)}
                         className="h-auto py-4 flex flex-col gap-1"
                       >
                         <Package className="h-5 w-5" />
@@ -704,8 +683,8 @@ export default function SelectionPage() {
                             <div className="font-bold text-lg">{motor.rpm} rpm</div>
                           </div>
                           <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950 dark:to-amber-950 p-3 rounded-lg border">
-                            <div className="text-muted-foreground text-xs mb-1">极数</div>
-                            <div className="font-bold text-lg">{motor.poles}极</div>
+                            <div className="text-muted-foreground text-xs mb-1">电流</div>
+                            <div className="font-bold text-lg">{motor.current} A</div>
                           </div>
                           <div className="bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-950 dark:to-blue-950 p-3 rounded-lg border">
                             <div className="text-muted-foreground text-xs mb-1">效率</div>
@@ -719,8 +698,10 @@ export default function SelectionPage() {
 
                         <div className="flex flex-wrap gap-2">
                           <Badge variant="outline">{motor.frequency}Hz</Badge>
+                          <Badge variant="outline">{motor.poles}极</Badge>
                           <Badge variant="outline">{motor.insulation}级绝缘</Badge>
                           <Badge variant="outline">{motor.mounting}</Badge>
+                          <Badge variant="outline">功率因数 {motor.powerFactor}</Badge>
                         </div>
 
                         <Link href={`/products/${motor.id}`} className="block">

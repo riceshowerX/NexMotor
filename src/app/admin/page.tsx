@@ -20,6 +20,7 @@ import {
   Settings,
   Layers,
   Megaphone,
+  Upload,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -213,6 +214,12 @@ export default function AdminDashboardPage() {
                     <Button variant="outline" className="w-full gap-2">
                       <Package className="h-4 w-4" />
                       添加产品
+                    </Button>
+                  </Link>
+                  <Link href="/admin/import" className="block">
+                    <Button variant="outline" className="w-full gap-2 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 border-primary/50">
+                      <Upload className="h-4 w-4" />
+                      批量导入
                     </Button>
                   </Link>
                 </div>
