@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Sliders, Search, X, ChevronDown, Zap, RotateCw, Shield, Package, ArrowRight, Info } from 'lucide-react';
+import { ArrowLeft, Sliders, Search, X, Zap, RotateCw, Shield, Package, ArrowRight, Plus, Minus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Slider } from '@/components/ui/slider';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
@@ -14,15 +14,18 @@ import { Separator } from '@/components/ui/separator';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface SelectionCriteria {
-  powerRange: [number, number];
+  powerMin: string;
+  powerMax: string;
   voltage: string[];
   frequency: string[];
   poles: string[];
   ipRating: string[];
   insulation: string[];
   mounting: string[];
-  rpmRange: [number, number];
-  application: string;
+  rpmMin: string;
+  rpmMax: string;
+  customVoltage: string;
+  customFrequency: string;
 }
 
 interface Motor {
@@ -50,11 +53,13 @@ const VOLTAGE_OPTIONS = [
   { label: '380V', value: '380' },
   { label: '440V', value: '440' },
   { label: '660V', value: '660' },
+  { label: '自定义...', value: 'custom' },
 ];
 
 const FREQUENCY_OPTIONS = [
   { label: '50Hz', value: '50' },
   { label: '60Hz', value: '60' },
+  { label: '自定义...', value: 'custom' },
 ];
 
 const POLES_OPTIONS = [
@@ -87,26 +92,20 @@ const MOUNTING_OPTIONS = [
   { label: 'V1 (法兰向下)', value: 'V1' },
 ];
 
-const APPLICATION_OPTIONS = [
-  { label: '水泵', value: 'pump' },
-  { label: '风机', value: 'fan' },
-  { label: '压缩机', value: 'compressor' },
-  { label: '输送带', value: 'conveyor' },
-  { label: '机床', value: 'machine_tool' },
-  { label: '通用传动', value: 'general' },
-];
-
 export default function SelectionPage() {
   const [criteria, setCriteria] = useState<SelectionCriteria>({
-    powerRange: [0.1, 200],
+    powerMin: '',
+    powerMax: '',
     voltage: [],
     frequency: [],
     poles: [],
     ipRating: [],
     insulation: [],
     mounting: [],
-    rpmRange: [500, 4000],
-    application: '',
+    rpmMin: '',
+    rpmMax: '',
+    customVoltage: '',
+    customFrequency: '',
   });
 
   const [motors, setMotors] = useState<Motor[]>([]);
@@ -145,18 +144,31 @@ export default function SelectionPage() {
   const filterMotors = useCallback(() => {
     let filtered = motors.filter(motor => {
       // 功率范围筛选
-      if (motor.power < criteria.powerRange[0] || motor.power > criteria.powerRange[1]) {
+      if (criteria.powerMin && motor.power < parseFloat(criteria.powerMin)) {
+        return false;
+      }
+      if (criteria.powerMax && motor.power > parseFloat(criteria.powerMax)) {
         return false;
       }
 
       // 电压筛选
-      if (criteria.voltage.length > 0 && !criteria.voltage.includes(motor.voltage.toString())) {
-        return false;
+      if (criteria.voltage.length > 0) {
+        const voltages = criteria.voltage.includes('custom')
+          ? [...criteria.voltage.filter(v => v !== 'custom'), criteria.customVoltage].filter(Boolean)
+          : criteria.voltage;
+        if (!voltages.includes(motor.voltage.toString())) {
+          return false;
+        }
       }
 
       // 频率筛选
-      if (criteria.frequency.length > 0 && !criteria.frequency.includes(motor.frequency.toString())) {
-        return false;
+      if (criteria.frequency.length > 0) {
+        const frequencies = criteria.frequency.includes('custom')
+          ? [...criteria.frequency.filter(f => f !== 'custom'), criteria.customFrequency].filter(Boolean)
+          : criteria.frequency;
+        if (!frequencies.includes(motor.frequency.toString())) {
+          return false;
+        }
       }
 
       // 极数筛选
@@ -180,7 +192,10 @@ export default function SelectionPage() {
       }
 
       // 转速范围筛选
-      if (motor.rpm < criteria.rpmRange[0] || motor.rpm > criteria.rpmRange[1]) {
+      if (criteria.rpmMin && motor.rpm < parseFloat(criteria.rpmMin)) {
+        return false;
+      }
+      if (criteria.rpmMax && motor.rpm > parseFloat(criteria.rpmMax)) {
         return false;
       }
 
@@ -200,35 +215,59 @@ export default function SelectionPage() {
     });
   };
 
-  const handleSliderChange = (field: 'powerRange' | 'rpmRange', value: number[]) => {
-    setCriteria(prev => ({ ...prev, [field]: [value[0], value[1]] }));
+  const handleInputChange = (field: keyof SelectionCriteria, value: string) => {
+    setCriteria(prev => ({ ...prev, [field]: value }));
   };
 
   const handleReset = () => {
     setCriteria({
-      powerRange: [0.1, 200],
+      powerMin: '',
+      powerMax: '',
       voltage: [],
       frequency: [],
       poles: [],
       ipRating: [],
       insulation: [],
       mounting: [],
-      rpmRange: [500, 4000],
-      application: '',
+      rpmMin: '',
+      rpmMax: '',
+      customVoltage: '',
+      customFrequency: '',
     });
   };
 
   const hasActiveFilters = () => {
     return (
+      criteria.powerMin !== '' ||
+      criteria.powerMax !== '' ||
       criteria.voltage.length > 0 ||
       criteria.frequency.length > 0 ||
       criteria.poles.length > 0 ||
       criteria.ipRating.length > 0 ||
       criteria.insulation.length > 0 ||
       criteria.mounting.length > 0 ||
-      criteria.application !== ''
+      criteria.rpmMin !== '' ||
+      criteria.rpmMax !== ''
     );
   };
+
+  const handleQuickSelect = (power: number, rpm: number, voltage: number) => {
+    setCriteria(prev => ({
+      ...prev,
+      powerMin: (power - 0.5).toString(),
+      powerMax: (power + 0.5).toString(),
+      rpmMin: (rpm - 200).toString(),
+      rpmMax: (rpm + 200).toString(),
+      voltage: [voltage.toString()],
+    }));
+  };
+
+  const popularRequirements = [
+    { name: '小功率水泵', power: 1.5, rpm: 2840, voltage: 380 },
+    { name: '中型风机', power: 7.5, rpm: 1450, voltage: 380 },
+    { name: '大型压缩机', power: 45, rpm: 1480, voltage: 380 },
+    { name: '低速传动', power: 15, rpm: 730, voltage: 380 },
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
@@ -245,7 +284,7 @@ export default function SelectionPage() {
               </Link>
               <div>
                 <h1 className="text-2xl font-bold">电机智能选型</h1>
-                <p className="text-sm text-muted-foreground">根据您的需求，精准匹配最适合的电机型号</p>
+                <p className="text-sm text-muted-foreground">输入精确参数，快速匹配最佳电机</p>
               </div>
             </div>
             <Button
@@ -277,7 +316,7 @@ export default function SelectionPage() {
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-lg flex items-center gap-2">
                         <Search className="h-5 w-5" />
-                        筛选条件
+                        精确筛选
                       </CardTitle>
                       {hasActiveFilters() && (
                         <Button variant="ghost" size="sm" onClick={handleReset}>
@@ -287,52 +326,39 @@ export default function SelectionPage() {
                       )}
                     </div>
                     <CardDescription>
-                      选择参数以缩小筛选范围
+                      输入精确参数进行筛选
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto">
-                    {/* Application */}
-                    <div className="space-y-3">
-                      <Label className="flex items-center gap-2">
-                        <Package className="h-4 w-4" />
-                        应用场景
-                      </Label>
-                      <Select
-                        value={criteria.application}
-                        onValueChange={(value) => setCriteria(prev => ({ ...prev, application: value }))}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="请选择应用场景" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {APPLICATION_OPTIONS.map(opt => (
-                            <SelectItem key={opt.value} value={opt.value}>
-                              {opt.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <Separator />
-
                     {/* Power Range */}
                     <div className="space-y-3">
                       <Label className="flex items-center gap-2">
                         <Zap className="h-4 w-4" />
                         功率范围 (kW)
-                        <span className="ml-auto text-sm font-medium text-primary">
-                          {criteria.powerRange[0]} - {criteria.powerRange[1]} kW
-                        </span>
                       </Label>
-                      <Slider
-                        min={0.1}
-                        max={200}
-                        step={0.1}
-                        value={criteria.powerRange}
-                        onValueChange={(value) => handleSliderChange('powerRange', value)}
-                        className="py-4"
-                      />
+                      <div className="flex gap-2 items-center">
+                        <div className="flex-1">
+                          <Input
+                            type="number"
+                            placeholder="最小"
+                            value={criteria.powerMin}
+                            onChange={(e) => handleInputChange('powerMin', e.target.value)}
+                            min="0"
+                            step="0.1"
+                          />
+                        </div>
+                        <span className="text-muted-foreground">-</span>
+                        <div className="flex-1">
+                          <Input
+                            type="number"
+                            placeholder="最大"
+                            value={criteria.powerMax}
+                            onChange={(e) => handleInputChange('powerMax', e.target.value)}
+                            min="0"
+                            step="0.1"
+                          />
+                        </div>
+                      </div>
                     </div>
 
                     {/* RPM Range */}
@@ -340,18 +366,30 @@ export default function SelectionPage() {
                       <Label className="flex items-center gap-2">
                         <RotateCw className="h-4 w-4" />
                         转速范围 (rpm)
-                        <span className="ml-auto text-sm font-medium text-primary">
-                          {criteria.rpmRange[0]} - {criteria.rpmRange[1]} rpm
-                        </span>
                       </Label>
-                      <Slider
-                        min={500}
-                        max={4000}
-                        step={100}
-                        value={criteria.rpmRange}
-                        onValueChange={(value) => handleSliderChange('rpmRange', value)}
-                        className="py-4"
-                      />
+                      <div className="flex gap-2 items-center">
+                        <div className="flex-1">
+                          <Input
+                            type="number"
+                            placeholder="最小"
+                            value={criteria.rpmMin}
+                            onChange={(e) => handleInputChange('rpmMin', e.target.value)}
+                            min="0"
+                            step="100"
+                          />
+                        </div>
+                        <span className="text-muted-foreground">-</span>
+                        <div className="flex-1">
+                          <Input
+                            type="number"
+                            placeholder="最大"
+                            value={criteria.rpmMax}
+                            onChange={(e) => handleInputChange('rpmMax', e.target.value)}
+                            min="0"
+                            step="100"
+                          />
+                        </div>
+                      </div>
                     </div>
 
                     <Separator />
@@ -360,46 +398,108 @@ export default function SelectionPage() {
                     <div className="space-y-3">
                       <Label className="flex items-center gap-2">
                         <Zap className="h-4 w-4" />
-                        电压等级
+                        电压等级 (V)
                       </Label>
                       <div className="grid grid-cols-2 gap-2">
-                        {VOLTAGE_OPTIONS.map(opt => (
-                          <div key={opt.value} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`voltage-${opt.value}`}
-                              checked={criteria.voltage.includes(opt.value)}
-                              onCheckedChange={() => handleCheckboxChange('voltage', opt.value)}
-                            />
-                            <Label
-                              htmlFor={`voltage-${opt.value}`}
-                              className="text-sm font-normal cursor-pointer"
-                            >
-                              {opt.label}
-                            </Label>
-                          </div>
-                        ))}
+                        {VOLTAGE_OPTIONS.map(opt => {
+                          if (opt.value === 'custom') {
+                            return (
+                              <div key={opt.value} className="col-span-2 space-y-2">
+                                <div className="flex items-center space-x-2">
+                                  <Checkbox
+                                    id="voltage-custom"
+                                    checked={criteria.voltage.includes('custom')}
+                                    onCheckedChange={() => handleCheckboxChange('voltage', 'custom')}
+                                  />
+                                  <Label
+                                    htmlFor="voltage-custom"
+                                    className="text-sm font-normal cursor-pointer flex-1"
+                                  >
+                                    自定义电压
+                                  </Label>
+                                </div>
+                                {criteria.voltage.includes('custom') && (
+                                  <Input
+                                    type="number"
+                                    placeholder="输入电压值"
+                                    value={criteria.customVoltage}
+                                    onChange={(e) => handleInputChange('customVoltage', e.target.value)}
+                                    min="0"
+                                    className="ml-6"
+                                  />
+                                )}
+                              </div>
+                            );
+                          }
+                          return (
+                            <div key={opt.value} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`voltage-${opt.value}`}
+                                checked={criteria.voltage.includes(opt.value)}
+                                onCheckedChange={() => handleCheckboxChange('voltage', opt.value)}
+                              />
+                              <Label
+                                htmlFor={`voltage-${opt.value}`}
+                                className="text-sm font-normal cursor-pointer"
+                              >
+                                {opt.label}
+                              </Label>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
 
                     {/* Frequency */}
                     <div className="space-y-3">
-                      <Label>频率</Label>
+                      <Label>频率 (Hz)</Label>
                       <div className="grid grid-cols-2 gap-2">
-                        {FREQUENCY_OPTIONS.map(opt => (
-                          <div key={opt.value} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`freq-${opt.value}`}
-                              checked={criteria.frequency.includes(opt.value)}
-                              onCheckedChange={() => handleCheckboxChange('frequency', opt.value)}
-                            />
-                            <Label
-                              htmlFor={`freq-${opt.value}`}
-                              className="text-sm font-normal cursor-pointer"
-                            >
-                              {opt.label}
-                            </Label>
-                          </div>
-                        ))}
+                        {FREQUENCY_OPTIONS.map(opt => {
+                          if (opt.value === 'custom') {
+                            return (
+                              <div key={opt.value} className="col-span-2 space-y-2">
+                                <div className="flex items-center space-x-2">
+                                  <Checkbox
+                                    id="frequency-custom"
+                                    checked={criteria.frequency.includes('custom')}
+                                    onCheckedChange={() => handleCheckboxChange('frequency', 'custom')}
+                                  />
+                                  <Label
+                                    htmlFor="frequency-custom"
+                                    className="text-sm font-normal cursor-pointer flex-1"
+                                  >
+                                    自定义频率
+                                  </Label>
+                                </div>
+                                {criteria.frequency.includes('custom') && (
+                                  <Input
+                                    type="number"
+                                    placeholder="输入频率值"
+                                    value={criteria.customFrequency}
+                                    onChange={(e) => handleInputChange('customFrequency', e.target.value)}
+                                    min="0"
+                                    className="ml-6"
+                                  />
+                                )}
+                              </div>
+                            );
+                          }
+                          return (
+                            <div key={opt.value} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`freq-${opt.value}`}
+                                checked={criteria.frequency.includes(opt.value)}
+                                onCheckedChange={() => handleCheckboxChange('frequency', opt.value)}
+                              />
+                              <Label
+                                htmlFor={`freq-${opt.value}`}
+                                className="text-sm font-normal cursor-pointer"
+                              >
+                                {opt.label}
+                              </Label>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
 
@@ -493,6 +593,16 @@ export default function SelectionPage() {
                         ))}
                       </div>
                     </div>
+
+                    <Separator />
+
+                    {/* Reset Button */}
+                    {hasActiveFilters() && (
+                      <Button onClick={handleReset} variant="outline" className="w-full gap-2">
+                        <RefreshCw className="h-4 w-4" />
+                        清除所有筛选
+                      </Button>
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>
@@ -501,6 +611,34 @@ export default function SelectionPage() {
 
           {/* Results Panel */}
           <div className="flex-1">
+            {/* Quick Select */}
+            {!showFilters && (
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle className="text-lg">常用场景快速选型</CardTitle>
+                  <CardDescription>点击下方场景快速筛选</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {popularRequirements.map((req, index) => (
+                      <Button
+                        key={index}
+                        variant="outline"
+                        onClick={() => handleQuickSelect(req.power, req.rpm, req.voltage)}
+                        className="h-auto py-4 flex flex-col gap-1"
+                      >
+                        <Package className="h-5 w-5" />
+                        <span className="text-sm font-semibold">{req.name}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {req.power}kW · {req.rpm}rpm · {req.voltage}V
+                        </span>
+                      </Button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-bold">选型结果</h2>
@@ -553,29 +691,29 @@ export default function SelectionPage() {
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div className="grid grid-cols-2 gap-3 text-sm">
-                          <div className="bg-muted/50 p-2 rounded-lg">
-                            <div className="text-muted-foreground text-xs">功率</div>
-                            <div className="font-semibold text-primary">{motor.power} kW</div>
+                          <div className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950 p-3 rounded-lg border">
+                            <div className="text-muted-foreground text-xs mb-1">功率</div>
+                            <div className="font-bold text-lg text-primary">{motor.power} kW</div>
                           </div>
-                          <div className="bg-muted/50 p-2 rounded-lg">
-                            <div className="text-muted-foreground text-xs">电压</div>
-                            <div className="font-semibold">{motor.voltage}V</div>
+                          <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 p-3 rounded-lg border">
+                            <div className="text-muted-foreground text-xs mb-1">电压</div>
+                            <div className="font-bold text-lg">{motor.voltage}V</div>
                           </div>
-                          <div className="bg-muted/50 p-2 rounded-lg">
-                            <div className="text-muted-foreground text-xs">转速</div>
-                            <div className="font-semibold">{motor.rpm} rpm</div>
+                          <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950 p-3 rounded-lg border">
+                            <div className="text-muted-foreground text-xs mb-1">转速</div>
+                            <div className="font-bold text-lg">{motor.rpm} rpm</div>
                           </div>
-                          <div className="bg-muted/50 p-2 rounded-lg">
-                            <div className="text-muted-foreground text-xs">极数</div>
-                            <div className="font-semibold">{motor.poles}极</div>
+                          <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950 dark:to-amber-950 p-3 rounded-lg border">
+                            <div className="text-muted-foreground text-xs mb-1">极数</div>
+                            <div className="font-bold text-lg">{motor.poles}极</div>
                           </div>
-                          <div className="bg-muted/50 p-2 rounded-lg">
-                            <div className="text-muted-foreground text-xs">效率</div>
-                            <div className="font-semibold">{motor.efficiency}%</div>
+                          <div className="bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-950 dark:to-blue-950 p-3 rounded-lg border">
+                            <div className="text-muted-foreground text-xs mb-1">效率</div>
+                            <div className="font-bold text-lg">{motor.efficiency}%</div>
                           </div>
-                          <div className="bg-muted/50 p-2 rounded-lg">
-                            <div className="text-muted-foreground text-xs">防护</div>
-                            <div className="font-semibold">{motor.ip}</div>
+                          <div className="bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-950 dark:to-red-950 p-3 rounded-lg border">
+                            <div className="text-muted-foreground text-xs mb-1">防护</div>
+                            <div className="font-bold text-lg">{motor.ip}</div>
                           </div>
                         </div>
 
