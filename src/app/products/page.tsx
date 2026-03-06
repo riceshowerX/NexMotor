@@ -335,7 +335,6 @@ export default function ProductsPage() {
                         <SelectValue placeholder="全部" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">全部</SelectItem>
                         <SelectItem value="380">380V</SelectItem>
                         <SelectItem value="220">220V</SelectItem>
                         <SelectItem value="660">660V</SelectItem>
@@ -354,7 +353,6 @@ export default function ProductsPage() {
                         <SelectValue placeholder="全部" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">全部</SelectItem>
                         <SelectItem value="IP54">IP54</SelectItem>
                         <SelectItem value="IP55">IP55</SelectItem>
                         <SelectItem value="IP56">IP56</SelectItem>
@@ -373,7 +371,6 @@ export default function ProductsPage() {
                         <SelectValue placeholder="全部" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">全部</SelectItem>
                         <SelectItem value="B">B级</SelectItem>
                         <SelectItem value="F">F级</SelectItem>
                         <SelectItem value="H">H级</SelectItem>
