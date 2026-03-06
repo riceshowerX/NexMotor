@@ -87,11 +87,20 @@
   },
   "admin": {
     "title": "Admin Dashboard",
+    "dashboard": "Dashboard",
+    "unread_messages": "Unread Messages",
+    "total_users": "Total Users",
+    "messages_management": "Messages Management",
+    "view_messages": "View Messages",
+    "total_messages": "Total Messages",
     "add": "Add Product",
     "edit": "Edit",
     "delete": "Delete",
     "delete_confirm": "Are you sure you want to delete this product?",
     "delete_success": "Delete successful",
+    "add_success": "Product added successfully",
+    "add_failed": "Add failed",
+    "update_failed": "Update failed",
     "save": "Save",
     "cancel": "Cancel",
     "import": "Import",
@@ -162,5 +171,63 @@
     "by_frame_size": "By Frame Size",
     "by_power": "By Power",
     "recent_added": "Recently Added"
+  },
+  "login": {
+    "admin_desc": "Please enter admin username and password",
+    "default_account": "Default account: admin / admin123"
+  },
+  "contact": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "company": "Company Name",
+    "subject": "Message Subject",
+    "content": "Message Content",
+    "submit": "Send Message",
+    "success": "Message sent successfully"
+  },
+  "profile": {
+    "phone": "Phone",
+    "company": "Company",
+    "address": "Address",
+    "bio": "Bio",
+    "save": "Save",
+    "update_success": "Update successful"
+  },
+  "messages": {
+    "title": "Messages",
+    "unread": "Unread",
+    "read": "Read",
+    "replied": "Replied",
+    "total_unread": "Unread ({count})",
+    "total_replied": "Replied ({count})",
+    "reply": "Reply",
+    "reply_placeholder": "Enter your reply...",
+    "reply_success": "Reply sent successfully",
+    "reply_failed": "Reply failed",
+    "update_status": "Update Status",
+    "status_update_success": "Status updated successfully",
+    "delete_confirm": "Are you sure you want to delete this message?"
+  },
+  "banners": {
+    "title": "Banners",
+    "add_success": "Banner added successfully",
+    "update_success": "Update successful",
+    "delete_confirm": "Are you sure you want to delete this banner?"
+  },
+  "announcements": {
+    "title": "Announcements",
+    "update_success": "Update successful",
+    "delete_confirm": "Are you sure you want to delete this announcement?"
+  },
+  "settings": {
+    "title": "System Settings",
+    "save_success": "Settings saved successfully",
+    "save_failed": "Save failed"
+  },
+  "api": {
+    "delete_success": "Delete successful",
+    "update_success": "Update successful",
+    "config_update_success": "Configuration updated successfully"
   }
 }

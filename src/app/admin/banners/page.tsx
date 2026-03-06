@@ -23,6 +23,7 @@ import { Switch } from '@/components/ui/switch';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { useTranslation } from '@/context/LanguageContext';
 
 interface Banner {
   id: number;
@@ -35,6 +36,7 @@ interface Banner {
 }
 
 export default function AdminBannersPage() {
+  const { t } = useTranslation();
   const { isAuthenticated, user } = useAuth();
   const router = useRouter();
   const [banners, setBanners] = useState<Banner[]>([]);
@@ -131,22 +133,22 @@ export default function AdminBannersPage() {
 
       const data = await response.json();
       if (data.success) {
-        toast.success('更新成功');
+        toast.success(t('banners.update_success'));
         setEditingBanner(null);
         fetchBanners();
       } else {
-        toast.error(data.message || '更新失败');
+        toast.error(data.message || t('admin.update_failed'));
       }
     } catch (error) {
       console.error('更新失败:', error);
-      toast.error('更新失败');
+      toast.error(t('admin.update_failed'));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('确定要删除这个轮播图吗？')) return;
+    if (!confirm(t('banners.delete_confirm'))) return;
 
     try {
       const token = localStorage.getItem('token');
@@ -159,14 +161,14 @@ export default function AdminBannersPage() {
 
       const data = await response.json();
       if (data.success) {
-        toast.success('删除成功');
+        toast.success(t('admin.delete_success'));
         fetchBanners();
       } else {
-        toast.error(data.message || '删除失败');
+        toast.error(data.message || t('admin.update_failed'));
       }
     } catch (error) {
       console.error('删除失败:', error);
-      toast.error('删除失败');
+      toast.error(t('admin.update_failed'));
     }
   };
 

@@ -104,13 +104,13 @@ export async function PUT(request: NextRequest) {
     db.close();
 
     if (result.changes === 0) {
-      return NextResponse.json({ success: false, message: '轮播图不存在' }, { status: 404 });
+      return NextResponse.json({ success: false, message: 'Banner not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, message: '更新成功' });
+    return NextResponse.json({ success: true, message: 'Updated successfully' });
   } catch (error) {
-    console.error('更新轮播图失败:', error);
-    return NextResponse.json({ success: false, message: '更新轮播图失败' }, { status: 500 });
+    console.error('Update banner error:', error);
+    return NextResponse.json({ success: false, message: 'Failed to update banner' }, { status: 500 });
   }
 }
 
@@ -134,12 +134,12 @@ export async function DELETE(request: NextRequest) {
     db.close();
 
     if (result.changes === 0) {
-      return NextResponse.json({ success: false, message: '轮播图不存在' }, { status: 404 });
+      return NextResponse.json({ success: false, message: 'Banner not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, message: '删除成功' });
+    return NextResponse.json({ success: true, message: 'Deleted successfully' });
   } catch (error) {
-    console.error('删除轮播图失败:', error);
-    return NextResponse.json({ success: false, message: '删除轮播图失败' }, { status: 500 });
+    console.error('Delete banner error:', error);
+    return NextResponse.json({ success: false, message: 'Failed to delete banner' }, { status: 500 });
   }
 }

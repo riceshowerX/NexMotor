@@ -10,8 +10,10 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import { useTranslation } from '@/context/LanguageContext';
 
 export default function ContactPage() {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -200,7 +202,7 @@ export default function ContactPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MessageSquare className="h-5 w-5 text-primary" />
-                  在线留言
+                  {t('contact.title') || '在线留言'}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -208,7 +210,7 @@ export default function ContactPage() {
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="name">
-                        姓名 <span className="text-destructive">*</span>
+                        {t('contact.name')} <span className="text-destructive">*</span>
                       </Label>
                       <Input
                         id="name"
@@ -216,12 +218,12 @@ export default function ContactPage() {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        placeholder="请输入您的姓名"
+                        placeholder={t('contact.name')}
                       />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email">
-                        邮箱 <span className="text-destructive">*</span>
+                        {t('contact.email')} <span className="text-destructive">*</span>
                       </Label>
                       <Input
                         id="email"
@@ -230,37 +232,37 @@ export default function ContactPage() {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        placeholder="请输入您的邮箱"
+                        placeholder={t('contact.email')}
                       />
                     </div>
                   </div>
 
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="phone">联系电话</Label>
+                      <Label htmlFor="phone">{t('contact.phone')}</Label>
                       <Input
                         id="phone"
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        placeholder="请输入您的电话"
+                        placeholder={t('contact.phone')}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="company">公司名称</Label>
+                      <Label htmlFor="company">{t('contact.company')}</Label>
                       <Input
                         id="company"
                         name="company"
                         value={formData.company}
                         onChange={handleChange}
-                        placeholder="请输入公司名称"
+                        placeholder={t('contact.company')}
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="subject">
-                      主题 <span className="text-destructive">*</span>
+                      {t('contact.subject')} <span className="text-destructive">*</span>
                     </Label>
                     <Input
                       id="subject"
@@ -268,13 +270,13 @@ export default function ContactPage() {
                       value={formData.subject}
                       onChange={handleChange}
                       required
-                      placeholder="请输入留言主题"
+                      placeholder={t('contact.subject')}
                     />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="message">
-                      留言内容 <span className="text-destructive">*</span>
+                      {t('contact.content')} <span className="text-destructive">*</span>
                     </Label>
                     <Textarea
                       id="message"

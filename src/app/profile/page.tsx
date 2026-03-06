@@ -17,8 +17,10 @@ import { useFavorites } from '@/context/FavoritesContext';
 import { useCompare } from '@/context/CompareContext';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import { useTranslation } from '@/context/LanguageContext';
 
 export default function ProfilePage() {
+  const { t } = useTranslation();
   const { user, isAuthenticated, logout } = useAuth();
   const { favorites } = useFavorites();
   const { compareList } = useCompare();
@@ -54,13 +56,13 @@ export default function ProfilePage() {
   }
 
   const handleSave = () => {
-    toast.success('个人信息已更新');
+    toast.success(t('profile.update_success'));
     setIsEditing(false);
   };
 
   const handleLogout = () => {
     logout();
-    toast.success('已退出登录');
+    toast.success(t('auth.logout_success'));
     router.push('/');
   };
 
@@ -246,43 +248,43 @@ export default function ProfilePage() {
                       />
                     </div>
                     <div>
-                      <Label>联系电话</Label>
+                      <Label>{t('profile.phone')}</Label>
                       <Input
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         disabled={!isEditing}
-                        placeholder="请输入联系电话"
+                        placeholder={t('profile.phone')}
                         className="mt-2 bg-background"
                       />
                     </div>
                     <div>
-                      <Label>公司名称</Label>
+                      <Label>{t('profile.company')}</Label>
                       <Input
                         value={formData.company}
                         onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                         disabled={!isEditing}
-                        placeholder="请输入公司名称"
+                        placeholder={t('profile.company')}
                         className="mt-2 bg-background"
                       />
                     </div>
                   </div>
                   <div>
-                    <Label>地址</Label>
+                    <Label>{t('profile.address')}</Label>
                     <Input
                       value={formData.address}
                       onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                       disabled={!isEditing}
-                      placeholder="请输入地址"
+                      placeholder={t('profile.address')}
                       className="mt-2 bg-background"
                     />
                   </div>
                   <div>
-                    <Label>个人简介</Label>
+                    <Label>{t('profile.bio')}</Label>
                     <Textarea
                       value={formData.bio}
                       onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                       disabled={!isEditing}
-                      placeholder="请输入个人简介"
+                      placeholder={t('profile.bio')}
                       rows={3}
                       className="mt-2 bg-background"
                     />
@@ -290,11 +292,11 @@ export default function ProfilePage() {
                   {isEditing && (
                     <div className="flex gap-2 justify-end">
                       <Button variant="outline" onClick={() => setIsEditing(false)}>
-                        取消
+                        {t('common.cancel')}
                       </Button>
                       <Button onClick={handleSave} className="gap-2 bg-gradient-to-r from-blue-600 to-cyan-600">
                         <CheckCircle className="h-4 w-4" />
-                        保存
+                        {t('profile.save')}
                       </Button>
                     </div>
                   )}

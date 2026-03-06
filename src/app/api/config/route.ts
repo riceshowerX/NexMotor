@@ -54,19 +54,19 @@ export async function POST(request: NextRequest) {
       const existing = db.prepare('SELECT id FROM system_config WHERE key = ?').get(key);
 
       if (existing) {
-        // 更新现有配置
+        // Update existing config
         db.prepare('UPDATE system_config SET value = ?, updated_at = CURRENT_TIMESTAMP WHERE key = ?').run(value, key);
       } else {
-        // 插入新配置
+        // Insert new config
         db.prepare('INSERT INTO system_config (key, value, is_public) VALUES (?, ?, 1)').run(key, value);
       }
     }
 
     db.close();
 
-    return NextResponse.json({ success: true, message: '配置更新成功' });
+    return NextResponse.json({ success: true, message: 'Configuration updated successfully' });
   } catch (error) {
-    console.error('更新系统配置失败:', error);
-    return NextResponse.json({ success: false, message: '更新系统配置失败' }, { status: 500 });
+    console.error('Update system config error:', error);
+    return NextResponse.json({ success: false, message: 'Failed to update system configuration' }, { status: 500 });
   }
 }

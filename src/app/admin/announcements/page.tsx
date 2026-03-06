@@ -23,6 +23,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { useTranslation } from '@/context/LanguageContext';
 
 interface Announcement {
   id: number;
@@ -35,6 +36,7 @@ interface Announcement {
 }
 
 export default function AdminAnnouncementsPage() {
+  const { t } = useTranslation();
   const { isAuthenticated, user } = useAuth();
   const router = useRouter();
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
@@ -129,22 +131,22 @@ export default function AdminAnnouncementsPage() {
 
       const data = await response.json();
       if (data.success) {
-        toast.success('更新成功');
+        toast.success(t('announcements.update_success'));
         setEditingAnnouncement(null);
         fetchAnnouncements();
       } else {
-        toast.error(data.message || '更新失败');
+        toast.error(data.message || t('admin.update_failed'));
       }
     } catch (error) {
       console.error('更新失败:', error);
-      toast.error('更新失败');
+      toast.error(t('admin.update_failed'));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('确定要删除这个公告吗？')) return;
+    if (!confirm(t('announcements.delete_confirm'))) return;
 
     try {
       const token = localStorage.getItem('token');
@@ -157,10 +159,10 @@ export default function AdminAnnouncementsPage() {
 
       const data = await response.json();
       if (data.success) {
-        toast.success('删除成功');
+        toast.success(t('admin.delete_success'));
         fetchAnnouncements();
       } else {
-        toast.error(data.message || '删除失败');
+        toast.error(data.message || t('admin.update_failed'));
       }
     } catch (error) {
       console.error('删除失败:', error);

@@ -37,6 +37,7 @@ import {
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { useTranslation } from '@/context/LanguageContext';
 
 interface Message {
   id: number;
@@ -53,6 +54,7 @@ interface Message {
 }
 
 export default function AdminMessagesPage() {
+  const { t } = useTranslation();
   const { isAuthenticated, user } = useAuth();
   const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -108,14 +110,14 @@ export default function AdminMessagesPage() {
 
       const data = await response.json();
       if (data.success) {
-        toast.success('状态更新成功');
+        toast.success(t('messages.status_update_success'));
         fetchMessages();
       } else {
-        toast.error(data.message || '更新失败');
+        toast.error(data.message || t('admin.update_failed'));
       }
     } catch (error) {
       console.error('更新状态失败:', error);
-      toast.error('更新失败');
+      toast.error(t('admin.update_failed'));
     }
   };
 
@@ -139,23 +141,23 @@ export default function AdminMessagesPage() {
 
       const data = await response.json();
       if (data.success) {
-        toast.success('回复成功');
+        toast.success(t('messages.reply_success'));
         setReplyText('');
         setSelectedMessage(null);
         fetchMessages();
       } else {
-        toast.error(data.message || '回复失败');
+        toast.error(data.message || t('messages.reply_failed'));
       }
     } catch (error) {
       console.error('回复失败:', error);
-      toast.error('回复失败');
+      toast.error(t('messages.reply_failed'));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('确定要删除这条留言吗？')) return;
+    if (!confirm(t('messages.delete_confirm'))) return;
 
     try {
       const token = localStorage.getItem('token');
@@ -168,10 +170,10 @@ export default function AdminMessagesPage() {
 
       const data = await response.json();
       if (data.success) {
-        toast.success('删除成功');
+        toast.success(t('admin.delete_success'));
         fetchMessages();
       } else {
-        toast.error(data.message || '删除失败');
+        toast.error(data.message || t('admin.update_failed'));
       }
     } catch (error) {
       console.error('删除失败:', error);
@@ -240,13 +242,13 @@ export default function AdminMessagesPage() {
                     variant={statusFilter === 'unread' ? 'default' : 'outline'}
                     onClick={() => setStatusFilter('unread')}
                   >
-                    未读 ({messages.filter((m) => m.status === 'unread').length})
+                    {t('messages.total_unread').replace('{count}', messages.filter((m) => m.status === 'unread').length.toString())}
                   </Button>
                   <Button
                     variant={statusFilter === 'replied' ? 'default' : 'outline'}
                     onClick={() => setStatusFilter('replied')}
                   >
-                    已回复 ({messages.filter((m) => m.status === 'replied').length})
+                    {t('messages.total_replied').replace('{count}', messages.filter((m) => m.status === 'replied').length.toString())}
                   </Button>
                 </div>
               </div>
@@ -310,7 +312,7 @@ export default function AdminMessagesPage() {
                               : ''
                           }
                         >
-                          {message.status === 'unread' ? '未读' : message.status === 'replied' ? '已回复' : '已读'}
+                          {message.status === 'unread' ? t('messages.unread') : message.status === 'replied' ? t('messages.replied') : t('messages.read')}
                         </Badge>
                         <span className="text-sm text-muted-foreground">
                           {new Date(message.created_at).toLocaleString()}
@@ -399,7 +401,7 @@ export default function AdminMessagesPage() {
               <Label htmlFor="reply">回复内容</Label>
               <Textarea
                 id="reply"
-                placeholder="请输入您的回复..."
+                placeholder={t('messages.reply_placeholder')}
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
                 rows={6}
@@ -408,11 +410,11 @@ export default function AdminMessagesPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setSelectedMessage(null)}>
-              取消
+              {t('common.cancel')}
             </Button>
             <Button onClick={handleReply} disabled={!replyText.trim() || isSubmitting} className="gap-2">
               <Send className="h-4 w-4" />
-              {isSubmitting ? '发送中...' : '发送回复'}
+              {isSubmitting ? t('common.loading') : t('messages.reply')}
             </Button>
           </DialogFooter>
         </DialogContent>

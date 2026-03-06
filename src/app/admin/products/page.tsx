@@ -19,6 +19,7 @@ import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { useTranslation } from '@/context/LanguageContext';
 
 interface Motor {
   id: number;
@@ -33,6 +34,7 @@ interface Motor {
 }
 
 export default function AdminProductsPage() {
+  const { t } = useTranslation();
   const { isAuthenticated, user } = useAuth();
   const router = useRouter();
   const [products, setProducts] = useState<Motor[]>([]);
@@ -63,7 +65,7 @@ export default function AdminProductsPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('确定要删除这个产品吗？')) return;
+    if (!confirm(t('admin.delete_confirm'))) return;
 
     try {
       const token = localStorage.getItem('token');
@@ -76,10 +78,10 @@ export default function AdminProductsPage() {
 
       const data = await response.json();
       if (data.success) {
-        toast.success('删除成功');
+        toast.success(t('admin.delete_success'));
         fetchProducts();
       } else {
-        toast.error(data.message || '删除失败');
+        toast.error(data.message || t('common.error'));
       }
     } catch (error) {
       console.error('删除失败:', error);

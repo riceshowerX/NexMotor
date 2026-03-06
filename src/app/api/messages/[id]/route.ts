@@ -82,12 +82,12 @@ export async function PATCH(
     db.close();
 
     if (result.changes === 0) {
-      return NextResponse.json({ success: false, message: '留言不存在' }, { status: 404 });
+      return NextResponse.json({ success: false, message: 'Message not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, message: '更新成功' });
+    return NextResponse.json({ success: true, message: 'Updated successfully' });
   } catch (error) {
-    console.error('更新留言失败:', error);
+    console.error('Update message error:', error);
     return NextResponse.json({ success: false, message: '更新留言失败' }, { status: 500 });
   }
 }
@@ -109,12 +109,12 @@ export async function DELETE(
     db.close();
 
     if (result.changes === 0) {
-      return NextResponse.json({ success: false, message: '留言不存在' }, { status: 404 });
+      return NextResponse.json({ success: false, message: 'Message not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, message: '删除成功' });
+    return NextResponse.json({ success: true, message: 'Deleted successfully' });
   } catch (error) {
-    console.error('删除留言失败:', error);
-    return NextResponse.json({ success: false, message: '删除留言失败' }, { status: 500 });
+    console.error('Delete message error:', error);
+    return NextResponse.json({ success: false, message: 'Failed to delete message' }, { status: 500 });
   }
 }

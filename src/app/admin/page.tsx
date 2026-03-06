@@ -29,8 +29,10 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from '@/context/LanguageContext';
 
 export default function AdminDashboardPage() {
+  const { t } = useTranslation();
   const { isAuthenticated, user } = useAuth();
   const router = useRouter();
   const [stats, setStats] = useState<any>(null);
@@ -168,13 +170,13 @@ export default function AdminDashboardPage() {
               trend={12.5}
             />
             <StatCard
-              title="未读留言"
+              title={t('admin.unread_messages')}
               value={stats?.messages?.unread || 0}
               icon={AlertCircle}
               color="from-sky-500 to-blue-500"
             />
             <StatCard
-              title="用户总数"
+              title={t('admin.total_users')}
               value={stats?.users?.total || 0}
               icon={Users}
               color="from-blue-600 to-cyan-600"
@@ -188,7 +190,7 @@ export default function AdminDashboardPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MessageSquare className="h-5 w-5 text-primary" />
-                  留言管理
+                  {t('admin.messages_management')}
                 </CardTitle>
                 <CardDescription>查看和回复用户留言</CardDescription>
               </CardHeader>
@@ -196,15 +198,15 @@ export default function AdminDashboardPage() {
                 <div className="flex items-center justify-between mb-4">
                   <div className="space-y-1">
                     <p className="text-2xl font-bold">{stats?.messages?.total || 0}</p>
-                    <p className="text-sm text-muted-foreground">总留言数</p>
+                    <p className="text-sm text-muted-foreground">{t('admin.total_messages')}</p>
                   </div>
                   <Badge variant="secondary" className="bg-primary/10 text-primary">
-                    {stats?.messages?.unread || 0} 未读
+                    {stats?.messages?.unread || 0} {t('messages.unread')}
                   </Badge>
                 </div>
                 <Link href="/admin/messages" className="block">
                   <Button className="w-full gap-2 bg-gradient-to-r from-blue-600 to-cyan-600">
-                    查看留言
+                    {t('admin.view_messages')}
                     <Eye className="h-4 w-4" />
                   </Button>
                 </Link>
@@ -310,7 +312,7 @@ export default function AdminDashboardPage() {
                         <h4 className="font-semibold truncate">{msg.name}</h4>
                         <div className="flex items-center gap-2">
                           <Badge variant={msg.status === 'unread' ? 'default' : 'secondary'}>
-                            {msg.status === 'unread' ? '未读' : msg.status === 'read' ? '已读' : '已回复'}
+                            {msg.status === 'unread' ? t('messages.unread') : msg.status === 'read' ? t('messages.read') : t('messages.replied')}
                           </Badge>
                           <span className="text-xs text-muted-foreground">
                             {new Date(msg.created_at).toLocaleString()}

@@ -43,9 +43,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">{t('auth.login')}</CardTitle>
-          <CardDescription>
-            请输入管理员账号和密码
-          </CardDescription>
+          <CardDescription>{t('login.admin_desc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -84,7 +82,7 @@ export default function LoginPage() {
             </Button>
           </form>
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            默认账号: admin / admin123
+            {t('login.default_account')}
           </p>
         </CardContent>
       </Card>

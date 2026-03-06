@@ -109,13 +109,13 @@ export async function PUT(request: NextRequest) {
     db.close();
 
     if (result.changes === 0) {
-      return NextResponse.json({ success: false, message: '公告不存在' }, { status: 404 });
+      return NextResponse.json({ success: false, message: 'Announcement not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, message: '更新成功' });
+    return NextResponse.json({ success: true, message: 'Updated successfully' });
   } catch (error) {
-    console.error('更新公告失败:', error);
-    return NextResponse.json({ success: false, message: '更新公告失败' }, { status: 500 });
+    console.error('Update announcement error:', error);
+    return NextResponse.json({ success: false, message: 'Failed to update announcement' }, { status: 500 });
   }
 }
 
@@ -139,12 +139,12 @@ export async function DELETE(request: NextRequest) {
     db.close();
 
     if (result.changes === 0) {
-      return NextResponse.json({ success: false, message: '公告不存在' }, { status: 404 });
+      return NextResponse.json({ success: false, message: 'Announcement not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, message: '删除成功' });
+    return NextResponse.json({ success: true, message: 'Deleted successfully' });
   } catch (error) {
-    console.error('删除公告失败:', error);
-    return NextResponse.json({ success: false, message: '删除公告失败' }, { status: 500 });
+    console.error('Delete announcement error:', error);
+    return NextResponse.json({ success: false, message: 'Failed to delete announcement' }, { status: 500 });
   }
 }

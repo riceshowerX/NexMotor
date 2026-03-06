@@ -27,6 +27,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { useTranslation } from '@/context/LanguageContext';
 
 interface SystemConfig {
   site_name: string;
@@ -57,6 +58,7 @@ const defaultConfig: SystemConfig = {
 };
 
 export default function AdminSettingsPage() {
+  const { t } = useTranslation();
   const { isAuthenticated, user } = useAuth();
   const router = useRouter();
   const [config, setConfig] = useState<SystemConfig>(defaultConfig);
@@ -108,13 +110,13 @@ export default function AdminSettingsPage() {
 
       const data = await response.json();
       if (data.success) {
-        toast.success('设置保存成功');
+        toast.success(t('settings.save_success'));
       } else {
-        toast.error(data.message || '保存失败');
+        toast.error(data.message || t('settings.save_failed'));
       }
     } catch (error) {
       console.error('保存配置失败:', error);
-      toast.error('保存失败');
+      toast.error(t('settings.save_failed'));
     } finally {
       setSaving(false);
     }

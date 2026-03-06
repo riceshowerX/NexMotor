@@ -15,8 +15,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
+import { useTranslation } from '@/context/LanguageContext';
 
 export default function AdminAddProductPage() {
+  const { t } = useTranslation();
   const { isAuthenticated, user } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -95,14 +97,14 @@ export default function AdminAddProductPage() {
 
       const data = await response.json();
       if (data.success) {
-        toast.success('产品添加成功');
+        toast.success(t('admin.add_success'));
         router.push('/admin/products');
       } else {
-        toast.error(data.message || '添加失败');
+        toast.error(data.message || t('admin.add_failed'));
       }
     } catch (error) {
       console.error('添加产品失败:', error);
-      toast.error('添加失败');
+      toast.error(t('admin.add_failed'));
     } finally {
       setLoading(false);
     }
