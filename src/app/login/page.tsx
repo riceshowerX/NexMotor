@@ -24,6 +24,10 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      // 清除旧的token和用户数据（处理JWT格式升级）
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+
       await login(username, password);
       toast.success(t('auth.login_success'));
       router.push('/admin');

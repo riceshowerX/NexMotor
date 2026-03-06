@@ -24,8 +24,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
     if (token && userData) {
-      setUser(JSON.parse(userData));
+      const user = JSON.parse(userData);
+      setUser(user);
       setIsAuthenticated(true);
+
+      // 验证token是否有效
+      verifyToken();
     }
     setLoading(false);
   }, []);
@@ -46,6 +50,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsAuthenticated(true);
     } else {
       throw new Error(data.message || '登录失败');
+    }
+  };
+
+  const verifyToken = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      logout();
+      return;
+    }
+
+    try {
+      // 尝试使用token获取统计数据来验证其有效性
+      const response = await fetch('/api/stats', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        // Token无效，清除登录状态
+        logout();
+      }
+    } catch (error) {
+      // 网络错误或其他问题，不清除登录状态
+      console.error('Token验证失败:', error);
     }
   };
 

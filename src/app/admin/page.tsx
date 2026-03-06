@@ -26,6 +26,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 
@@ -54,6 +55,11 @@ export default function AdminDashboardPage() {
       const data = await response.json();
       if (data.success) {
         setStats(data.data);
+      } else if (data.message === '需要管理员权限') {
+        // Token无效，需要重新登录
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        router.push('/login');
       }
     } catch (error) {
       console.error('获取统计数据失败:', error);
@@ -130,6 +136,21 @@ export default function AdminDashboardPage() {
         </div>
       ) : (
         <div className="space-y-6">
+          {/* Check if all stats are 0 - indicates token issue */}
+          {stats?.products?.total === 0 && stats?.messages?.total === 0 && stats?.users?.total === 0 && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>数据加载失败</AlertTitle>
+              <AlertDescription>
+                无法加载统计数据，可能是登录凭证已过期。请
+                <Link href="/login" className="font-semibold underline ml-1">
+                  重新登录
+                </Link>
+                后再试。
+              </AlertDescription>
+            </Alert>
+          )}
+
           {/* Stats Overview */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard
