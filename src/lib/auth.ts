@@ -22,8 +22,8 @@ export function getAuthUser(request: NextRequest): AuthUser | null {
       return null;
     }
 
-    // 支持两种payload格式: id 或 userId
-    const userId = (decoded as any).id || decoded.userId;
+    // 使用userId字段（与JWTPayload接口一致）
+    const userId = decoded.userId;
     if (!userId) {
       return null;
     }
