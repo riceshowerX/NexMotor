@@ -97,3 +97,11 @@ Desktop.ini
 .turbo
 
 .coze-logs
+
+# Database
+data/
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
