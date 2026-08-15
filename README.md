@@ -1,5 +1,7 @@
 <div align="center">
 
+**简体中文 | [English](./README.en.md)**
+
 # ⚙️ NexMotor
 
 **新一代在线电机选型平台**
