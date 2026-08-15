@@ -2,6 +2,7 @@
   "name": "electric-motor-selector-backend",
   "version": "1.0.0",
   "description": "后端API服务 - 在线电机选型系统",
+  "license": "MIT",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",

@@ -137,7 +137,7 @@ npm run build      # 生产构建
 
 ## 许可证
 
-采用 [Apache License 2.0](LICENSE) 开源
+采用 [MIT License](LICENSE) 开源
 允许商业使用、修改、分发，仅需保留版权与许可证声明。
 
 ---
